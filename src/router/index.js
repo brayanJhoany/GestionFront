@@ -4,20 +4,23 @@ import Administrador from "../views/Administrador.vue";
 Vue.use(VueRouter);
 
 const routes = [
-
   {
-    //Enrutamiento de la vista del administrador
     path: "/",
     name: "Administrador",
     component: () =>
       import(
         /* webpackChunkName: "Administrador" */ "@/views/Administrador.vue"
       ),
-    // meta: {
-    //   requiresAuth: true,
-    // },
     children: [
-   
+      {
+        path: "/curso/:id/:nombre/seccion/:seccion",
+        name: "Curso",
+        component: () =>
+          import(
+            /* webpackChunkName: "cursos" */ "@/components/Globales/BodyGlobal.vue"
+          ),
+        children: [],
+      },
     ],
   },
 ];

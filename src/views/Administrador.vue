@@ -1,9 +1,9 @@
 <template>
   <div class="Administrador">
     <AppBarGlobal />
+    <Navegacion />
     <router-view></router-view>
     <!-- <FooterGlobal /> -->
-    <Navegacion />
   </div>
 </template>
 

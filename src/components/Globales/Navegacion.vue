@@ -14,40 +14,42 @@
         <v-list-item
           class="px-2 py-1 difuminado"
           active-class="activacion"
-          to="/administrador/perfil"
           v-on="on"
         >
           <v-list-item-avatar>
             <v-img src="@/assets/Globales/estudiante.jpg"></v-img>
           </v-list-item-avatar>
           <v-list-item-title class="white--text letra pl-2"
-            ><strong>Perfil</strong></v-list-item-title
+            ><strong>Cursos</strong></v-list-item-title
           >
         </v-list-item>
       </template>
-      <span><strong>Perfil</strong></span>
     </v-tooltip>
     <v-divider></v-divider>
-    <v-list style=" margine-right: 0; margine-left:0;">
+
+    <v-list style=" margine-right: 0; margine-left:0;" v-for="(curso) in cursos" :key="curso.id">
       <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
         <template v-slot:activator="{ on }">
           <v-list-item
             v-on="on"
-            to="/administrador/usuarios"
+            :to="{name:'Curso', params:{id: curso.id , nombre: curso.nombreKey , seccion: curso.seccion}}"
             class="difuminado"
             active-class="activacion"
           >
             <v-list-item-icon>
               <v-icon color="white">fas fa-users</v-icon>
             </v-list-item-icon>
-            <v-list-item-title class="white--text letra">
-              <strong>Usuario</strong></v-list-item-title
+            <v-list-item-title class="white--text truncate letra">
+              <strong>{{curso.nombre}}</strong></v-list-item-title
             >
           </v-list-item>
         </template>
         <span><strong>Usuario</strong></span>
       </v-tooltip>
+      
+
     </v-list>
+
     <!-- <template v-slot:append>
       <v-list-item
         v-if="$vuetify.breakpoint.smAndDown ? false : true"
@@ -70,12 +72,15 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import axios from 'axios'
 export default {
   name: "Navegacion",
   data() {
     return {
       drawer: true,
       on: "",
+      cursos:[],
+      cursosAux:[],
     };
   },
   computed: {
@@ -89,7 +94,50 @@ export default {
   },
   methods: {
     obtenerCursos(){
-      console.log("getCursos");
+      this.cursosAux= [];
+       var url = this.$store.state.rutaDinamica+'1/cursos';
+        axios.get(url)
+          .then((result)=>{
+            let response = result.data;
+            if (result.data.error == false) {
+              for (let index = 0; index < response.cursos.length; index++) {
+                const cursoAux = response.cursos[index];
+                let curso = {
+                  id: cursoAux.id,
+                  nombre: cursoAux.nombre,
+                  nombreKey: cursoAux.nombreKey,
+                  seccion: cursoAux.seccion,
+                };
+                this.cursosAux[index]=curso;
+              }
+              this.cursos = this.cursosAux;
+            }
+          })
+          .catch((error) => {
+            // console.log(error);
+            // if (error.message == 'Network Error') {
+            //   this.alertError = true;
+            //   this.cargando = false;
+            //   this.textoError = 'Error al cargar los datos, inténtelo más tarde'
+            // } else {
+            //   if (error.response.data.success == false) {
+            //     switch (error.response.data.code) {
+            //       case 101:
+            //           //console.log(error.response.data.code +' '+ error.response.data.message);
+            //           //console.log(error.response.data);
+            //           this.alertError = true;
+            //           this.cargando = false;
+            //           this.textoError = error.response.data.message;
+            //           break;
+            //       default:
+            //           this.alertError = true;
+            //           this.cargando = false;
+            //           this.textoError = error.response.data.message;
+            //           break;
+            //     }
+            //   }
+            // } 
+          });
     }
   },
 };
