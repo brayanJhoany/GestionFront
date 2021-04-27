@@ -112,7 +112,7 @@
                             small
                             depressed
                             class="mr-2 py-2"
-                            @click="verficarModificarObservacion(observacion)"
+                            @click="cargarDatosModificarObservacion(observacion)"
                           >
                             <v-icon color="primary">
                               fas fa-edit
@@ -262,6 +262,48 @@
             <h4 class="white--text">Eliminar</h4>
           </v-btn>
         </div>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogModificarObservacion" persistent max-width="500px">
+      <v-card class="mx-auto" max-width="500">
+        <v-card-title class="headline primary text--center" primary-title>
+          <h5 class="white--text ">Modificar observacion</h5>
+        </v-card-title>
+        <v-container class="px-5 mt-5">
+          <v-text-field
+            v-model="modificarObservacion.titulo"
+            label="Titulo"
+            outlined
+            color="secondary"
+            prepend-inner-icon="fas fa-heading"
+          ></v-text-field>
+          <v-textarea
+            v-model="modificarObservacion.descripcion"
+            outlined
+            color="secondary"
+            label="Descripcion"
+          ></v-textarea>
+          <div class="pb-1" style="text-align:right;">
+            <v-btn
+              :small="$vuetify.breakpoint.smAndDown ? true : false"
+              rounded
+              color="warning"
+              @click="resetModificarObservacion"
+            >
+              <h4 class="white--text">Cancelar</h4>
+            </v-btn>
+            <v-btn
+              :small="$vuetify.breakpoint.smAndDown ? true : false"
+              rounded
+              color="secondary"
+              class="ml-2"
+              :loading="cargando"
+              @click="updateObservacion"
+            >
+              <h4 class="white--text">Modificar</h4>
+            </v-btn>
+          </div>
+        </v-container>
       </v-card>
     </v-dialog>
   </v-container>
@@ -540,6 +582,56 @@ export default {
       this.eliminarObservacion.titulo = observacion.titulo;
       this.eliminarObservacion.fecha = observacion.fecha;
       this.eliminarObservacion.descripcion = observacion.descripcion;
+    },
+    updateObservacion() {
+      console.log(this.modificarObservacion);
+      const request = {
+        titulo: this.modificarObservacion.titulo,
+        descripcion: this.modificarObservacion.descripcion,
+      };
+      const url = `${this.$store.state.rutaDinamica}profesor/1/curso/1/bitacora/1/observacion/${this.modificarObservacion.id}`;
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+          // console.log(result);
+          // console.log(result.data);
+          this.resetModificarObservacion();
+          this.obtenerObservaciones(); // ver como actualizar la app sin  llamar a la bd
+        })
+        .catch((error) => {
+          // if (error.message == 'Network Error') {
+          //   // console.log(error)
+          //   this.alertError = true;
+          //   this.textoError = 'Error al modificar la observación, inténtelo más tarde.';
+          //   this.resetModificarObservacion();
+          // } else if (error.response.data.success == false) {
+          //   // console.log(error.response.data.code +' '+ error.response.data.message);
+          //   // console.log(error.response.data);
+          //   this.textoError = error.response.data.message;
+          //   this.alertError = true;
+          //   this.resetModificarObservacion();
+          // } else {
+          //   // console.log(error)
+          //   this.alertError = true;
+          //   this.textoError = 'Error al modificar la observación, inténtelo más tarde.';
+          //   this.resetModificarObservacion();
+          // }
+        });
+    },
+    cargarDatosModificarObservacion(observacion) {
+      this.dialogModificarObservacion = true;
+      this.modificarObservacion = { id: '', titulo: '', descripcion: '' };
+      this.modificarObservacion.id = observacion.id;
+      this.modificarObservacion.titulo = observacion.titulo;
+      this.modificarObservacion.fecha = observacion.fecha;
+      this.modificarObservacion.descripcion = observacion.descripcion;
+    },
+    resetModificarObservacion() {
+      this.dialogModificarObservacion = false;
+      this.modificarObservacion.id = '';
+      this.modificarObservacion.titulo = '';
+      this.modificarObservacion.fecha = '';
+      this.modificarObservacion.descripcion = '';
     },
   },
 };

@@ -9,10 +9,7 @@ export default new Vuex.Store({
       drawer: true,
       miniVarianteAdm: false,
     },
-    numProfesores: 70,
-    numObservaciones: 69,
-    numCarreras: 7,
-    numEstudiantes: 1234,
+    usuario: null,
     config: {
       headers: { 'Content-Type': 'application/json' },
       baseURL: 'http://localhost',
