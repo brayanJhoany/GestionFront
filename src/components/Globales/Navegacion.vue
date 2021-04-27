@@ -93,7 +93,7 @@ export default {
   methods: {
     obtenerCursos() {
       this.cursosAux = [];
-      const url = `${this.$store.state.rutaDinamica}1/cursos`;
+      const url = `${this.$store.state.rutaDinamica}profesor/1/cursos`;
       axios
         .get(url)
         .then((result) => {
