@@ -17,7 +17,7 @@
                 <v-list-item-content>
                   <v-list-item-title class="headline mb-1">
                     <a @click="redireccion(card.nombre)">
-                      {{ card.nombre }}
+                      {{ card.nombre }} 
                     </a>
                   </v-list-item-title>
                 </v-list-item-content>
@@ -25,8 +25,25 @@
                   ><v-icon> {{ card.icono }}</v-icon>
                 </v-list-item-avatar>
               </v-list-item>
-
               <v-card-actions> </v-card-actions>
+            </v-card>
+            <v-card
+                class="mx-auto"
+                max-width="344"
+                @click="redireccion(card.nombre)"
+            >
+                <v-img
+                src="@/assets/bt.png"
+                height="100%"
+                
+                >
+                </v-img>
+                <v-card-title class="accent" >
+                    <div style="color: white;">
+                        <strong>{{ card.nombre }}</strong> 
+                    </div>
+                </v-card-title>
+    
             </v-card>
           </v-col>
         </v-row>
