@@ -11,39 +11,32 @@
         <v-row>
           <v-col cols="12" sm="0" md="1"> </v-col>
           <v-col cols="12" sm="12" md="10">
-            <v-card class="mt-13">
+            <v-card class="mt-13" color="info">
               <v-row>
-                <v-col cols="12" md="4" xl="3" style="padding-top:0; padding-bottom:0;">
-                  <v-card-title class="headline text--center primary" height="300px" primary-title>
-                    <v-row :style="$vuetify.breakpoint.smAndDown ? '' : 'height:250px;'">
-                      <v-col cols="6" sm="6" md="12" class="align-self-end ">
-                        <div>
-                          <strong
-                            class=" white--text"
-                            :style="
-                              $vuetify.breakpoint.lgAndDown ? 'font-size: 70%' : 'font-size: 100%'
-                            "
-                            >Bitacora</strong
-                          >
-                        </div>
-                      </v-col>
-                      <v-col cols="6" sm="6" md="12" class="align-self-end ">
-                        <div style="text-align:right;">
-                          <v-btn
-                            :small="$vuetify.breakpoint.lgAndDown ? true : false"
-                            fab
-                            bottom
-                            left
-                            @click="dialogAgregarObservacion = true"
-                          >
-                            <v-icon color="warning">fas fa-plus</v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
+                <v-col cols="12" >
+                  <v-card-title class="headline text--center " primary-title>
+                    <div>
+                        <strong
+                        class=" blue--text"
+                        >Observaciones</strong
+                        >
+                    </div>
+                    <v-spacer></v-spacer>
+                    <div style="text-align:right;">
+                        <v-btn
+                        :small="$vuetify.breakpoint.lgAndDown ? true : false"
+                        fab
+                        bottom
+                        left
+                        color="accent"
+                        @click="dialogAgregarObservacion = true"
+                        >
+                        <v-icon color="white">fas fa-plus</v-icon>
+                        </v-btn>
+                    </div>
                   </v-card-title>
                 </v-col>
-                <v-col cols="12" md="8" xl="9" class="align-self-center ">
+                <!--<v-col cols="12" md="8" xl="9" class="align-self-center ">
                   <v-overlay :absolute="true" :value="cargando">
                     <v-progress-circular indeterminate size="64"> </v-progress-circular>
                   </v-overlay>
@@ -61,22 +54,21 @@
                   <v-row justify="center" v-if="validacionObservacionesFalse == false">
                     <h3>No existen observaciones</h3>
                   </v-row>
-                </v-col>
+                </v-col>-->
               </v-row>
             </v-card>
+            <h3 class="white--text">/</h3>
             <v-timeline align-top dense>
               <v-timeline-item
                 v-for="(observacion, i) in observaciones"
                 :key="i"
-                :color="observacion.color"
-                :icon="observacion.icono"
-                fill-dot
-                dense
+                color="success"
+                large
               >
                 <v-card :color="observacion.color">
                   <v-card-title class="headline  text--center" primary-title>
                     <div class="v-markdown">
-                      <h5 class="white--text ">{{ observacion.titulo }}</h5>
+                      <h5 class="blue--text ">{{ observacion.titulo }}</h5>
                     </div>
                   </v-card-title>
                   <v-container style="background-color:white;">

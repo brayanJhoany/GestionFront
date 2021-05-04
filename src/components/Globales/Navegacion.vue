@@ -1,32 +1,23 @@
 <template>
   <v-navigation-drawer
     app
-    right
+    left
     v-model="drawers.drawer"
     :mini-variant="drawers.miniVarianteAdm"
     :permanent="$vuetify.breakpoint.mdAndUp"
     :temporary="$vuetify.breakpoint.smAndDown"
-    src="@/assets/Globales/drawer.jpg"
+    color="#054A91"
     mini-variant-width="80"
   >
     <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
       <template v-slot:activator="{ on }">
-        <v-list-item class="px-2 py-1 difuminado" active-class="activacion" v-on="on">
-          <v-list-item-avatar>
+        <v-list-item class="px-2 py-2 difuminado" active-class="activacion" v-on="on">
+          <!--<v-list-item-avatar>
             <v-img src="@/assets/Globales/estudiante.jpg"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-title class="white--text letra pl-2">
-                <v-list-item >
-                  <v-list-item-content class="white--text letra pl-2">
-                    
-                    <v-list-item-title class=" mb-1">
-                     Brayan E.
-                    </v-list-item-title>
-                    <v-list-item-subtitle class="white--text ">brayan.escobar...</v-list-item-subtitle>
-                  </v-list-item-content>
-
-                </v-list-item>
-            </v-list-item-title>
+          </v-list-item-avatar>-->
+          <v-list-item-title class="white--text letra pl-2 center"
+            ><strong>Cursos</strong></v-list-item-title
+          >
         </v-list-item>
       </template>
     </v-tooltip>
@@ -45,9 +36,9 @@
             class="difuminado"
             active-class="activacion"
           >
-            <v-list-item-icon>
+            <!--<v-list-item-icon>
               <v-icon color="white">fas fa-users</v-icon>
-            </v-list-item-icon>
+            </v-list-item-icon>-->
             <v-list-item-title class="white--text truncate letra">
               <strong>{{ curso.nombre }}</strong></v-list-item-title
             >
@@ -162,11 +153,11 @@ export default {
               this.cursosAux[index] = curso;
             }
             this.cursos = this.cursosAux;
-            // console.log( this.cursos);
+            console.log("holas");
           }
         })
         .catch((error) => {
-          // console.log(error);
+          console.log(error);
           // if (error.message == 'Network Error') {
           //   this.alertError = true;
           //   this.cargando = false;
