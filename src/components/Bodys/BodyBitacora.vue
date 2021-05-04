@@ -5,11 +5,11 @@
       volver
     </v-btn> -->
     <v-row>
-      <v-col cols="12" md="2" align-self="end"> </v-col>
+      <!-- <v-col cols="12" md="2" align-self="end"> </v-col> -->
 
       <v-col cols="12" md="8">
         <v-row>
-          <v-col cols="0" sm="0" md="1"> </v-col>
+          <v-col cols="12" sm="0" md="1"> </v-col>
           <v-col cols="12" sm="12" md="10">
             <v-card class="mt-13">
               <v-row>
@@ -23,7 +23,7 @@
                             :style="
                               $vuetify.breakpoint.lgAndDown ? 'font-size: 70%' : 'font-size: 100%'
                             "
-                            >Observaciones</strong
+                            >Bitacora</strong
                           >
                         </div>
                       </v-col>
@@ -82,10 +82,10 @@
                   <v-container style="background-color:white;">
                     <v-row style="margin: 0; padding: 0;">
                       <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-                        <h5>Autor</h5>
+                        <h5>Titulo</h5>
                       </v-col>
                       <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-                        <h5>: {{ observacion.creador }}</h5>
+                        <h5>: {{ observacion.titulo }}</h5>
                       </v-col>
                     </v-row>
                     <v-row style="margin: 0; padding: 0;">
@@ -148,7 +148,7 @@
           <v-col cols="0" sm="0" md="1"> </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" md="2"> </v-col>
+      <!-- <v-col cols="12" md="2"> </v-col> -->
     </v-row>
     <v-dialog v-model="dialogAgregarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
@@ -455,7 +455,13 @@ export default {
       }
     },
     obtenerObservaciones() {
-      const url = `${this.$store.state.rutaDinamica}profesor/1/curso/1/bitacora/1/observaciones`;
+      let idUsuario = this.$store.state.usuario.id;
+      if(idUsuario == null){
+        console.log("entre");
+        idUsuario=1;
+      }
+      let cursoId = this.$route.params.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observaciones";
       this.cargando = true;
       this.seriesaux = [0, 0, 0, 0];
 
@@ -511,13 +517,18 @@ export default {
       this.observacion.descripcion = '';
     },
     agregarObservacion() {
-      console.log(this.observacion);
-      const url = `${this.$store.state.rutaDinamica}profesor/1/curso/1/bitacora/1/observacion`;
-      console.log(url);
+      let idUsuario = this.$store.state.usuario.id;
+      if(idUsuario == null){
+        console.log("entre");
+        idUsuario=1;
+      }
+      let cursoId = this.$route.params.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion";
       const request = {
         titulo: this.observacion.titulo,
         descripcion: this.observacion.descripcion,
       };
+      console.log("agregar")
       axios.post(url, request, this.$store.state.config).then((result) => {
         this.resetAgregarObservacion();
         console.log(result.data);
@@ -541,8 +552,13 @@ export default {
       this.eliminarObservacion.descripcion = '';
     },
     EliminarObservacion() {
-      console.log(this.eliminarObservacion);
-      const url = `${this.$store.state.rutaDinamica}profesor/1/curso/1/bitacora/1/observacion/${this.eliminarObservacion.id}`;
+      let idUsuario = this.$store.state.usuario.id;
+      if(idUsuario == null){
+        console.log("entre");
+        idUsuario=1;
+      }
+      let cursoId = this.$route.params.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.eliminarObservacion.id;
       axios
         .delete(url, this.$store.state.config)
         .then((result) => {
@@ -584,12 +600,17 @@ export default {
       this.eliminarObservacion.descripcion = observacion.descripcion;
     },
     updateObservacion() {
-      console.log(this.modificarObservacion);
+      let idUsuario = this.$store.state.usuario.id;
+      if(idUsuario == null){
+        console.log("entre");
+        idUsuario=1;
+      }
+      let cursoId = this.$route.params.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
       const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
       };
-      const url = `${this.$store.state.rutaDinamica}profesor/1/curso/1/bitacora/1/observacion/${this.modificarObservacion.id}`;
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {

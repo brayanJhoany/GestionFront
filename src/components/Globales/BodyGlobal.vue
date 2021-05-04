@@ -12,7 +12,7 @@
             md="6"
             lg="4"
           >
-            <v-card class="mx-auto " max-width="400" outlined>
+            <v-card class="mx-auto " max-width="400" :color="card.color" outlined>
               <v-list-item three-line>
                 <v-list-item-content>
                   <v-list-item-title class="headline mb-1">
@@ -48,43 +48,23 @@ export default {
       cards: [
         {
           nombre: 'Bitacora',
-          icono: 'fas fa-school',
+          icono: 'fas fa-clipboard',
+          color: '#9FA8DA'
         },
         {
           nombre: 'Syllabus',
-          icono: 'fas fa-school',
+          icono: 'fas fa-book-open',
+          color: '#EF5350'
         },
         {
           nombre: 'Planificación',
-          icono: 'fas fa-school',
+          icono: 'fas fa-calendar-alt',
+          color: '#4CAF50'
         },
       ],
     };
   },
   props: { curso: Array },
-
-  // beforeRouteEnter(to, from, next) {
-  //   // aun no puedo usar al this
-  //   console.log('beforeRouteEnter');
-  //   // console.log("destoy actualizando la ruta");
-  //   // this.curso.id = this.$route.params.id;
-  //   // this.curso.nombre = this.$route.params.nombre.replace("-", " ");
-  //   // this.curso.seccion = this.$route.params.seccion;
-  //   // console.log(this.curso.nombre);
-  //   return next((vm) => {
-  //     console.log(from);
-  //     console.log(to);
-  //   });
-  // },
-  // beforeRouteUpdate(to, from) {
-  //   console.log('beforeRouteUpdate');
-  // },
-  // beforeRouteLeave(to, from) {
-  //   console.log('beforeRouteLeave');
-  // },
-  // created() {
-  //   this.remplazarNombreCurso();
-  // },
   methods: {
     redireccion(accion) {
       if (accion === 'Bitacora') {

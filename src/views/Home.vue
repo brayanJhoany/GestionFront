@@ -1,5 +1,5 @@
 <template>
-  <div class="Administrador">
+  <div class="Home">
     <AppBarGlobal />
     <Navegacion />
     <router-view></router-view>
@@ -8,7 +8,9 @@
 </template>
 
 <script>
-import Navegacion from '@/components/Globales/Navegacion.vue';
+import { mapState, mapMutations } from 'vuex';
+import axios from 'axios';
+import Navegacion from '../components/Globales/Navegacion';
 import AppBarGlobal from '../components/Globales/AppBarGlobal';
 // import FooterGlobal from "@/components/Globales/FooterGlobal.vue";
 

@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Administrador from '../views/Administrador.vue';
+import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Administrador',
-    component: () => import(/* webpackChunkName: "Administrador" */ '@/views/Administrador.vue'),
+    name: 'Home',
+    component: () => import(/* webpackChunkName: "Administrador" */ '@/views/Home.vue'),
     children: [
       {
         path: '/curso/:id/:nombre/seccion/:seccion',
