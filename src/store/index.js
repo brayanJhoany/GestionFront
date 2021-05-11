@@ -19,10 +19,10 @@ export default new Vuex.Store({
   },
   getters: {
     usuario: state => {
-      if (
-        state.usuario == null &&
-        localStorage.getItem("usuario") == undefined
-      ) {
+      if (localStorage.getItem("usuario")) {
+        state.usuario = JSON.parse(localStorage.getItem("usuario"));
+        return state.usuario;
+      } else {
         //de momento tenemos el id del usuario estatico
         let id = 1;
         const url = state.rutaDinamica + "profesor/" + id;
@@ -30,20 +30,13 @@ export default new Vuex.Store({
           .get(url)
           .then(result => {
             const response = result.data;
-            if ((response.error = false)) {
-              state.usuario = response.usuario;
-              localStorage.setItem("usuario", JSON.stringify(state.usuario));
-              return state.usuario;
-            }
-            return null;
-            //   localStorage.usuario = usuario;
+            state.usuario = response.profesor;
+            localStorage.setItem("usuario", JSON.stringify(state.usuario));
+            return state.usuario;
           })
           .catch(error => {
             return null;
           });
-      } else {
-        state.usuario = JSON.parse(localStorage.getItem("usuario"));
-        return state.usuario;
       }
     }
   },

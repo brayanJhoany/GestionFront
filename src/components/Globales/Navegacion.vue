@@ -82,10 +82,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['drawers']),
-     getUserValido(){
-            return this.$store.getters.usuario;
-        }
+    ...mapState(['drawers'])
   },
   icons: {
     iconfont: ['mdiSvg', 'mdi', 'mdiSvg', 'md', 'fa', 'fa4', 'faSvg'],
@@ -95,8 +92,7 @@ export default {
   },
   methods: {
     obtenerCursos() {
-      var usuario = this.getUserValido;
-
+      var usuario = this.$store.getters.usuario;
       this.cursosAux = [];
       const url = this.$store.state.rutaDinamica +"profesor/"+usuario.id+"/cursos";
       axios.get(url)
@@ -116,28 +112,6 @@ export default {
           }
         })
         .catch((error) => {
-          // if (error.message == 'Network Error') {
-          //   this.alertError = true;
-          //   this.cargando = false;
-          //   this.textoError = 'Error al cargar los datos, inténtelo más tarde'
-          // } else {
-          //   if (error.response.data.success == false) {
-          //     switch (error.response.data.code) {
-          //       case 101:
-          //           //console.log(error.response.data.code +' '+ error.response.data.message);
-          //           //console.log(error.response.data);
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //       default:
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //     }
-          //   }
-          // }
         });
     },
   },
