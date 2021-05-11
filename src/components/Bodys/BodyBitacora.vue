@@ -12,7 +12,7 @@
                   <v-card-title class="headline text--center " primary-title>
                     <div>
                         <strong
-                        class=" blue--text"
+                         style="font-size:25px;color:#3F51B5;"
                         >Observaciones</strong >
                     </div>
                     <v-spacer></v-spacer>
@@ -49,19 +49,19 @@
                   </v-card-title>
                   <v-container style="background-color:white;">
                     <v-row style="margin: 0; padding: 0;">
-                      <v-col  cols="4" lg="3" xl="2" style="margin: 0; padding: 0;font-size: 20px;">
-                        <letra>Fecha</letra>
-                        <!-- <h5 style="margin: 0; padding: 0;font-size: 20px;">Fecha</h5> -->
+                      <v-col  cols="4" lg="3" xl="2" style="margin: 0; padding: 0;font-size: 18px;">
+
+                        <h5 style="margin: 0; padding: 0;font-size: 18px;">Fecha:</h5>
                       </v-col>
 
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;font-size: 20px;">
-                        <h5>: {{ observacion.fecha }}</h5>
+                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;font-size: 18px;">
+                         <h5 style="margin: 0; padding: 0;font-size: 18px;"> {{ observacion.fecha }}</h5>
                       </v-col>
                     </v-row>
-                    <letra class="mt-4">Descripción</letra>
+                    <h5 style="margin: 0; padding: 0;font-size: 18px;"> Descripción</h5>
                     <!-- <h5 class="mt-4" style="margin: 0; padding: 0;font-size: 20px;"> Descripción</h5> -->
                     <div class="DIV  mb-2" style=" height:150px; overflow: auto;font-size: 20px; font-size: 90%">
-                      {{ observacion.descripcion }}
+                      <h5 style="margin: 0; padding: 0; font-size: 16px;">   {{ observacion.descripcion }}</h5>
                     </div>
 
                     <div style="text-align:right;">
@@ -232,7 +232,6 @@
            <v-form
             ref="form_actualizarObservacion"
             style="margin:0;padding:0;"
-            v-model="form_actualObservacionValido"
             lazy-validation
           >
             <v-text-field
@@ -243,27 +242,28 @@
              
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
-           <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
+           <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
               transition="scale-transition"
               offset-y
               min-width="290px"> 
                   <template v-slot:activator="{ on }">
-                      <v-text-field v-model="fechaAddObs" 
+                      <v-text-field v-model="fechaUpObs" 
                       readonly  v-on="on" >
                       </v-text-field>
                   </template>
                   <v-date-picker
                   ref="picker"
                   outlined
-                  v-model="fechaAddObs"
+                  v-model="fechaUpObs"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
                   @change="save"
-                  @input="menu = false"
+                  @input="menu2 = false"
                   
                   ></v-date-picker>
 
               </v-menu>
+
             
             <v-textarea
               v-model="modificarObservacion.descripcion"
@@ -325,11 +325,13 @@ export default {
         ],
         // unAnhoVariable: true,
         // rangoAnhosVariable: true,
+        activePicker: null,
+        date: null,
         fechaAddObs: new Date().toISOString().substr(0, 10),
-        fechaTer: new Date().toISOString().substr(0, 10),
+        fechaUpObs: new Date().toISOString().substr(0, 10),
         menu: false,
-
         menu2:false,
+        landscape: false,
       // datos para 
       observacion: {
         titulo: '',
@@ -483,10 +485,8 @@ export default {
         descripcion: this.observacion.descripcion,
         fecha: this.fechaAddObs
       };
-      console.log(this.fechaAddObs);
       axios.post(url, request, this.$store.state.config).then((result) => {
         this.resetAgregarObservacion();
-        console.log(result.data);
         const response = result.data;
         const observacion = {
           id: response.id,
@@ -557,7 +557,7 @@ export default {
       const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
-        fecha : this.fechaTer
+        fecha : this.fechaUpObs
       };
       axios
         .put(url, request, this.$store.state.config)
@@ -612,6 +612,7 @@ export default {
 .letra {
   font-size: 125%;
 }
+
 .borde {
   color: #fff;
   background-color: rgba(0, 0, 0, 0.6);
