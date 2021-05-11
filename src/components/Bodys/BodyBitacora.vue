@@ -13,21 +13,21 @@
                     <div>
                         <strong
                         class=" blue--text"
-                        >Observaciones</strong
-                        >
+                        >Observaciones</strong >
                     </div>
                     <v-spacer></v-spacer>
                     <div style="text-align:right;">
-                        <v-btn
-                        :small="$vuetify.breakpoint.lgAndDown ? true : false"
-                        fab
-                        bottom
-                        left
-                        color="accent"
-                        @click="dialogAgregarObservacion = true"
-                        >
-                        <v-icon color="white">fas fa-plus</v-icon>
-                        </v-btn>
+                         <v-tooltip bottom color="primary">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn 
+                                    :small="$vuetify.breakpoint.lgAndDown ? true : false"
+                                    fab bottom left
+                                    color="accent" v-on="on" @click="dialogAgregarObservacion = true " >
+                                        <v-icon color="white">fas fa-plus</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span><strong>Agregar observacion</strong></span>
+                          </v-tooltip>
                     </div>
                   </v-card-title>
                 </v-col>
@@ -44,29 +44,23 @@
                 <v-card color="success">
                   <v-card-title class="headline  text--center" primary-title>
                     <div class="v-markdown">
-                      <h5 class="blue--text ">{{ observacion.titulo }}</h5>
+                      <h5 class="white--text">{{ observacion.titulo }}</h5>
                     </div>
                   </v-card-title>
                   <v-container style="background-color:white;">
                     <v-row style="margin: 0; padding: 0;">
-                      <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-                        <h5>Titulo</h5>
-                      </v-col>
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-                        <h5>: {{ observacion.titulo }}</h5>
-                      </v-col>
-                    </v-row>
-                    <v-row style="margin: 0; padding: 0;">
-                      <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-                        <h5>Fecha</h5>
+                      <v-col  cols="4" lg="3" xl="2" style="margin: 0; padding: 0;font-size: 20px;">
+                        <letra>Fecha</letra>
+                        <!-- <h5 style="margin: 0; padding: 0;font-size: 20px;">Fecha</h5> -->
                       </v-col>
 
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
+                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;font-size: 20px;">
                         <h5>: {{ observacion.fecha }}</h5>
                       </v-col>
                     </v-row>
-                    <h5 class="mt-4">Descripción</h5>
-                    <div class="DIV  mb-2" style=" height:150px; overflow: auto; font-size: 90%">
+                    <letra class="mt-4">Descripción</letra>
+                    <!-- <h5 class="mt-4" style="margin: 0; padding: 0;font-size: 20px;"> Descripción</h5> -->
+                    <div class="DIV  mb-2" style=" height:150px; overflow: auto;font-size: 20px; font-size: 90%">
                       {{ observacion.descripcion }}
                     </div>
 
@@ -134,24 +128,22 @@
             <v-text-field
               v-model="observacion.titulo"
               label="Titulo"
-              outlined
               color="secondary"
-             
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
-           <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"> 
+               <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"> 
                   <template v-slot:activator="{ on }">
-                      <v-text-field v-model="fechaIni" 
+                      <v-text-field v-model="fechaAddObs" 
                       readonly  v-on="on" >
                       </v-text-field>
                   </template>
                   <v-date-picker
                   ref="picker"
                   outlined
-                  v-model="fechaIni"
+                  v-model="fechaAddObs"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
                   @change="save"
@@ -193,26 +185,6 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <!-- <v-dialog
-    ref="dialog"
-    v-model="dialogAgregarObservacion"
-    persistent
-    width="290px"
-  >
-    <template v-slot:activator="{ on }">
-      <v-text-field
-        v-model="fechaIni"
-        label="Picker in dialog"
-        prepend-icon="event"
-        readonly
-        v-on="on"
-      ></v-text-field>
-    </template>
-    <v-date-picker v-model="fechaIni" scrollable>
-      <div class="flex-grow-1"></div>
-      <v-btn text color="primary" @click="modal = false">OK</v-btn>
-    </v-date-picker>
-  </v-dialog> -->
     <v-dialog
       transition="scroll-y-reverse-transition"
       v-model="dialogEliminarObservacion"
@@ -227,34 +199,9 @@
         <v-card-title
           class="text-justify"
           :style="$vuetify.breakpoint.smAndDown ? 'font-size: 90%;' : 'font-size: 100%;'"
-          >Esta seguro que desea eliminar la siguiente observacion?</v-card-title
+          >Esta seguro que desea eliminar la siguiente observación?</v-card-title
         >
-        <v-container class="px-5" style="background-color:white;">
-          <v-row style="margin: 0; padding: 0;">
-            <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-              <h5>Titulo</h5>
-            </v-col>
-            <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-              <h5>: {{ eliminarObservacion.titulo }}</h5>
-            </v-col>
-          </v-row>
-
-          <!-- <v-row style="margin: 0; padding: 0;">
-            <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-              <h5>Fecha</h5>
-            </v-col>
-
-            <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-              <h5>: {{ eliminarObservacion.fecha }}</h5>
-            </v-col>
-          </v-row> -->
-          <h5 class="mt-4">Descripción</h5>
-          <div class="DIV  mb-2" style=" height:150px; overflow: auto; font-size: 90%">
-            {{ eliminarObservacion.descripcion }}
-          </div>
-        </v-container>
-
-        <div class="px-5  pb-4" style="text-align:right;">
+        <div class="px-5 mt-5  pb-4" style="text-align:right;">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown ? true : false"
             rounded
@@ -275,65 +222,78 @@
         </div>
       </v-card>
     </v-dialog>
+
     <v-dialog v-model="dialogModificarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
           <h5 class="white--text ">Modificar observacion</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
-          <v-text-field
-            v-model="modificarObservacion.titulo"
-            label="Titulo"
-            outlined
-            color="secondary"
-            prepend-inner-icon="fas fa-heading"
-          ></v-text-field>
-          <v-menu ref="menu" v-model="menu2" :close-on-content-click="false"
+           <v-form
+            ref="form_actualizarObservacion"
+            style="margin:0;padding:0;"
+            v-model="form_actualObservacionValido"
+            lazy-validation
+          >
+            <v-text-field
+              v-model="modificarObservacion.titulo"
+              label="Titulo"
+              outlined
+              color="secondary"
+             
+              :rules="[(v) => !!v || 'El título es requerido']"
+            ></v-text-field>
+           <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
               transition="scale-transition"
               offset-y
               min-width="290px"> 
                   <template v-slot:activator="{ on }">
-                      <v-text-field v-model="fechaTer" 
+                      <v-text-field v-model="fechaAddObs" 
                       readonly  v-on="on" >
                       </v-text-field>
                   </template>
                   <v-date-picker
                   ref="picker"
-                  v-model="fechaTer"
+                  outlined
+                  v-model="fechaAddObs"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
                   @change="save"
-                  @input="menu2 = false"
+                  @input="menu = false"
                   
                   ></v-date-picker>
 
               </v-menu>
-          <v-textarea
-            v-model="modificarObservacion.descripcion"
-            outlined
-            color="secondary"
-            label="Descripcion"
-          ></v-textarea>
-          <div class="pb-1" style="text-align:right;">
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown ? true : false"
-              rounded
-              color="warning"
-              @click="resetModificarObservacion"
-            >
-              <h4 class="white--text">Cancelar</h4>
-            </v-btn>
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown ? true : false"
-              rounded
+            
+            <v-textarea
+              v-model="modificarObservacion.descripcion"
+              outlined
               color="secondary"
-              class="ml-2"
-              :loading="cargando"
-              @click="updateObservacion"
-            >
-              <h4 class="white--text">Modificar</h4>
-            </v-btn>
-          </div>
+              label="Descripción"
+              :rules="[(v) => !!v || 'La descripción es requerida.']"
+            ></v-textarea>
+            <div class="pb-1" style="text-align:right;">
+              <v-btn
+                :small="$vuetify.breakpoint.smAndDown ? true : false"
+                rounded
+                color="warning"
+                @click="resetModificarObservacion"
+              >
+                <h4 class="white--text">Cancelar</h4>
+              </v-btn>
+              <v-btn
+                :disabled="!form_añadirObservacionValido"
+                :small="$vuetify.breakpoint.smAndDown ? true : false"
+                rounded
+                color="secondary"
+                class="ml-2"
+                :loading="cargando"
+                @click="agregarObservacion"
+              >
+                <h4 class="white--text">Agregar</h4>
+              </v-btn>
+            </div>
+          </v-form>
         </v-container>
       </v-card>
     </v-dialog>
@@ -350,53 +310,27 @@ export default {
       dialogAgregarObservacion: false,
       dialogModificarObservacion: false,
       dialogEliminarObservacion: false,
-      alertError: false,
-      textoError: '',
-      alertAcept: false,
-      textoAcept: '',
-      delay: 4000,
+
       mostrar: false,
       cargando: false,
       validacionObservaciones: false,
       validacionObservacionesFalse: true,
       observaciones: [],
       auxObservaciones: [],
-      series: [0, 0, 0, 0],
-      seriesaux: [0, 0, 0, 0],
-      chartOptions: {
-        chart: {
-          type: 'donut',
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 800,
-            animateGradually: {
-              enabled: true,
-              delay: 150,
-            },
-            dynamicAnimation: {
-              enabled: true,
-              speed: 350,
-            },
-          },
-        },
-        colors: ['#4ECDC4', '#FF6B6B', '#1A535C', '#2196F3'],
-        labels: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
-      },
       //fechas
        rules: [
         value => !!value || 'Requerido',
         value => value <= new Date().getFullYear()|| 'El año no puede ser mayor al actual',
         value => value >= 1981 || 'El año no puede ser menor a 1981',
         ],
-        unAnhoVariable: true,
-        rangoAnhosVariable: true,
-        fechaIni: new Date().toISOString().substr(0, 10),
+        // unAnhoVariable: true,
+        // rangoAnhosVariable: true,
+        fechaAddObs: new Date().toISOString().substr(0, 10),
         fechaTer: new Date().toISOString().substr(0, 10),
         menu: false,
 
-        menu2:true,
-      // store
+        menu2:false,
+      // datos para 
       observacion: {
         titulo: '',
         descripcion: '',
@@ -412,12 +346,7 @@ export default {
 
       dialogAEditarEstudiante: false,
 
-      reglasNumeros: [(v) => !!v || 'Requerido', (v) => /^[0-9]+$/.test(v) || 'Solo numeros'],
-      reglasNota: [
-        (v) => !!v || 'Requerido',
-        (v) => /^[0-9]+$/.test(v) || 'Solo numeros',
-        (v) => (v >= 50 && v <= 70) || 'Nota superior a 50 y menor a 70 (incluyendolos)',
-      ],
+
       form_EditarEstudianteValido: true,
       form_añadirObservacionValido: true,
       form_solicitarEstudianteValido: true,
@@ -431,26 +360,9 @@ export default {
         (value) => !!value || 'Requerido',
         (v) => /^\s.{1,500}$/.test(v) || 'Largo del Nombre no Válido',
       ],
-      regla_Email: [
-        (value) => !!value || 'Requerido',
-        (v) => /.+@utalca\.cl/.test(v) || /.+@alumnos\.utalca\.cl/.test(v) || 'Correo no Válido',
-      ],
-      regla_Contraseña: [
-        (value) => !!value || 'Requerido',
-        (v) => /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,}$/.test(v) || 'Contraseña muy corta',
-      ],
-      regla_anio: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'El año debe estar compuesto solo por numeros',
-        (value) => value <= new Date().getFullYear() || 'El año no debe ser mayor al actual',
-        (value) => value >= 1981 || 'El año no debe ser menor a 1981',
-      ],
-      regla_categoria: [(value) => !!value || 'Requerido'],
     };
   },
   computed: {
-    ...mapState(['perfilEstudiante', 'usuario', 'admin', 'secretariaEscuela', 'profesor']),
-
     target() {
       return '#hola';
     },
@@ -476,6 +388,12 @@ export default {
   },
 
   methods: {
+    resetAddObservation () {
+        this.$refs.form_añadirObservacion.resetValidation();
+    },
+    resetUpdateObservation () {
+        this.$refs.form_actualizarObservacion.resetValidation();
+    },
      save (date) {
         this.$refs.menu.save(date)
       },
@@ -550,10 +468,11 @@ export default {
         });
     },
     resetAgregarObservacion() {
+      this.resetAddObservation();
       this.dialogAgregarObservacion = false;
       this.observacion.titulo = '';
       this.observacion.descripcion = '';
-       this.fechaIni= new Date().toISOString().substr(0, 10)
+      this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
     agregarObservacion() {
       var usuario = this.getUserValido;
@@ -562,9 +481,9 @@ export default {
       const request = {
         titulo: this.observacion.titulo,
         descripcion: this.observacion.descripcion,
-        fecha: this.fechaIni
+        fecha: this.fechaAddObs
       };
-      console.log(this.fechaIni);
+      console.log(this.fechaAddObs);
       axios.post(url, request, this.$store.state.config).then((result) => {
         this.resetAgregarObservacion();
         console.log(result.data);
@@ -675,12 +594,13 @@ export default {
       this.modificarObservacion.descripcion = observacion.descripcion;
     },
     resetModificarObservacion() {
+      this.resetUpdateObservation();
       this.dialogModificarObservacion = false;
       this.modificarObservacion.id = '';
       this.modificarObservacion.titulo = '';
       this.modificarObservacion.fecha = '';
       this.modificarObservacion.descripcion = '';
-      this.fechaIni= new Date().toISOString().substr(0, 10);
+      this.fechaAddObs= new Date().toISOString().substr(0, 10);
     },
   },
 };
