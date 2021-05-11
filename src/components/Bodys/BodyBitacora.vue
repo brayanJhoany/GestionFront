@@ -1,11 +1,12 @@
 <template>
   <v-container fluid>
+    <Volver />
     <!-- <v-btn block @click="volver">
       <v-icon class="pr-2" color="primary"> fas fa-arrow-circle-left</v-icon>
       volver
     </v-btn> -->
     <v-row>
-      <v-col cols="12" md="2" align-self="end"> </v-col>
+      <v-col cols="12" md="2"> </v-col>
 
       <v-col cols="12" md="8">
         <v-row>
@@ -13,48 +14,34 @@
           <v-col cols="12" sm="12" md="10">
             <v-card class="mt-13" color="info">
               <v-row>
-                <v-col cols="12" >
-                  <v-card-title class="headline text--center " primary-title>
+                <v-col cols="12">
+                  <v-card-title class="headline text--center" primary-title>
                     <div>
-                        <strong
-                        class=" blue--text"
-                        >Observaciones</strong
-                        >
+                      <strong class="blue--text letra">Bitácora</strong>
                     </div>
                     <v-spacer></v-spacer>
-                    <div style="text-align:right;">
-                        <v-btn
-                        :small="$vuetify.breakpoint.lgAndDown ? true : false"
-                        fab
-                        bottom
-                        left
-                        color="accent"
-                        @click="dialogAgregarObservacion = true"
-                        >
-                        <v-icon color="white">fas fa-plus</v-icon>
-                        </v-btn>
+                    <div style="text-align: right">
+                      <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            :small="
+                              $vuetify.breakpoint.lgAndDown ? true : false
+                            "
+                            v-on="on"
+                            fab
+                            bottom
+                            left
+                            color="accent"
+                            @click="dialogAgregarObservacion = true"
+                          >
+                            <v-icon color="white">fas fa-plus</v-icon>
+                          </v-btn>
+                        </template>
+                        <span><strong>Añadir observación</strong></span>
+                      </v-tooltip>
                     </div>
                   </v-card-title>
                 </v-col>
-                <!--<v-col cols="12" md="8" xl="9" class="align-self-center ">
-                  <v-overlay :absolute="true" :value="cargando">
-                    <v-progress-circular indeterminate size="64"> </v-progress-circular>
-                  </v-overlay>
-                  <v-row justify="center" v-if="validacionObservaciones">
-                    <div id="chart">
-                      <apexchart
-                        ref="realtimeChart"
-                        type="donut"
-                        :options="chartOptions"
-                        :series="series"
-                        :width="$vuetify.breakpoint.lgAndDown ? 300 : 380"
-                      ></apexchart>
-                    </div>
-                  </v-row>
-                  <v-row justify="center" v-if="validacionObservacionesFalse == false">
-                    <h3>No existen observaciones</h3>
-                  </v-row>
-                </v-col>-->
               </v-row>
             </v-card>
             <h3 class="white--text">/</h3>
@@ -65,36 +52,29 @@
                 color="success"
                 large
               >
-                <v-card :color="observacion.color">
-                  <v-card-title class="headline  text--center" primary-title>
+                <v-card color="success">
+                  <v-card-title class="headline text--center" primary-title>
                     <div class="v-markdown">
-                      <h5 class="blue--text ">{{ observacion.titulo }}</h5>
+                      <h5 class="white--text difuminado">
+                        {{ observacion.titulo }}
+                      </h5>
                     </div>
                   </v-card-title>
-                  <v-container style="background-color:white;">
-                    <v-row style="margin: 0; padding: 0;">
-                      <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-                        <h5>Autor</h5>
-                      </v-col>
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-                        <h5>: {{ observacion.creador }}</h5>
+                  <v-container style="background-color: white">
+                    <v-row style="margin: 0; padding: 0">
+                      <v-col cols="12" style="margin: 0; padding: 0">
+                        <h5>Fecha : {{ observacion.fecha }}</h5>
                       </v-col>
                     </v-row>
-                    <v-row style="margin: 0; padding: 0;">
-                      <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
-                        <h5>Fecha</h5>
-                      </v-col>
-
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
-                        <h5>: {{ observacion.fecha }}</h5>
-                      </v-col>
-                    </v-row>
-                    <h5 class="mt-4">Descripción</h5>
-                    <div class="DIV  mb-2" style=" height:150px; overflow: auto; font-size: 90%">
+                    <h5 class="mt-4 mb-1">Descripción</h5>
+                    <div
+                      class="DIV mb-2"
+                      style="height: 150px; overflow: auto; font-size: 90%"
+                    >
                       {{ observacion.descripcion }}
                     </div>
 
-                    <div style="text-align:right;">
+                    <div style="text-align: right">
                       <v-tooltip bottom color="primary">
                         <template v-slot:activator="{ on }">
                           <v-btn
@@ -104,11 +84,11 @@
                             small
                             depressed
                             class="mr-2 py-2"
-                            @click="cargarDatosModificarObservacion(observacion)"
+                            @click="
+                              cargarDatosModificarObservacion(observacion)
+                            "
                           >
-                            <v-icon color="primary">
-                              fas fa-edit
-                            </v-icon>
+                            <v-icon color="primary"> fas fa-edit </v-icon>
                           </v-btn>
                         </template>
                         <span><strong>Editar</strong></span>
@@ -124,9 +104,7 @@
                             class="mr-2 py-2"
                             @click="cargarDatosEliminarObservacion(observacion)"
                           >
-                            <v-icon color="warning">
-                              fas fa-trash-alt
-                            </v-icon>
+                            <v-icon color="warning"> fas fa-trash-alt </v-icon>
                           </v-btn>
                         </template>
                         <span><strong>Eliminar</strong></span>
@@ -145,12 +123,12 @@
     <v-dialog v-model="dialogAgregarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Agregar observación</h5>
+          <h5 class="white--text">Agregar observación</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
           <v-form
             ref="form_añadirObservacion"
-            style="margin:0;padding:0;"
+            style="margin: 0; padding: 0"
             v-model="form_añadirObservacionValido"
             lazy-validation
           >
@@ -169,7 +147,7 @@
               label="Descripción"
               :rules="[(v) => !!v || 'La descripción es requerida.']"
             ></v-textarea>
-            <div class="pb-1" style="text-align:right;">
+            <div class="pb-1" style="text-align: right">
               <v-btn
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
@@ -202,20 +180,25 @@
     >
       <v-card class="mx-auto" max-width="500px">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Eliminar Observacion</h5>
+          <h5 class="white--text">Eliminar Observacion</h5>
         </v-card-title>
 
         <v-card-title
           class="text-justify"
-          :style="$vuetify.breakpoint.smAndDown ? 'font-size: 90%;' : 'font-size: 100%;'"
-          >Esta seguro que desea eliminar la siguiente observacion?</v-card-title
+          :style="
+            $vuetify.breakpoint.smAndDown
+              ? 'font-size: 90%;'
+              : 'font-size: 100%;'
+          "
+          >Esta seguro que desea eliminar la siguiente
+          observacion?</v-card-title
         >
-        <v-container class="px-5" style="background-color:white;">
-          <v-row style="margin: 0; padding: 0;">
-            <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0;">
+        <v-container class="px-5" style="background-color: white">
+          <v-row style="margin: 0; padding: 0">
+            <v-col cols="4" lg="3" xl="2" style="margin: 0; padding: 0">
               <h5>Titulo</h5>
             </v-col>
-            <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;">
+            <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0">
               <h5>: {{ eliminarObservacion.titulo }}</h5>
             </v-col>
           </v-row>
@@ -230,12 +213,15 @@
             </v-col>
           </v-row> -->
           <h5 class="mt-4">Descripción</h5>
-          <div class="DIV  mb-2" style=" height:150px; overflow: auto; font-size: 90%">
+          <div
+            class="DIV mb-2"
+            style="height: 150px; overflow: auto; font-size: 90%"
+          >
             {{ eliminarObservacion.descripcion }}
           </div>
         </v-container>
 
-        <div class="px-5  pb-4" style="text-align:right;">
+        <div class="px-5 pb-4" style="text-align: right">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown ? true : false"
             rounded
@@ -259,7 +245,7 @@
     <v-dialog v-model="dialogModificarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Modificar observacion</h5>
+          <h5 class="white--text">Modificar observacion</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
           <v-text-field
@@ -275,7 +261,7 @@
             color="secondary"
             label="Descripcion"
           ></v-textarea>
-          <div class="pb-1" style="text-align:right;">
+          <div class="pb-1" style="text-align: right">
             <v-btn
               :small="$vuetify.breakpoint.smAndDown ? true : false"
               rounded
@@ -302,19 +288,23 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-import axios from 'axios';
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
+import Volver from "@/components/Globales/Volver.vue";
 
 export default {
+  components: {
+    Volver,
+  },
   data() {
     return {
       dialogAgregarObservacion: false,
       dialogModificarObservacion: false,
       dialogEliminarObservacion: false,
       alertError: false,
-      textoError: '',
+      textoError: "",
       alertAcept: false,
-      textoAcept: '',
+      textoAcept: "",
       delay: 4000,
       mostrar: false,
       cargando: false,
@@ -326,10 +316,10 @@ export default {
       seriesaux: [0, 0, 0, 0],
       chartOptions: {
         chart: {
-          type: 'donut',
+          type: "donut",
           animations: {
             enabled: true,
-            easing: 'easeinout',
+            easing: "easeinout",
             speed: 800,
             animateGradually: {
               enabled: true,
@@ -341,85 +331,114 @@ export default {
             },
           },
         },
-        colors: ['#4ECDC4', '#FF6B6B', '#1A535C', '#2196F3'],
-        labels: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
+        colors: ["#4ECDC4", "#FF6B6B", "#1A535C", "#2196F3"],
+        labels: ["Positiva", "Negativa", "Informativa", "Otro"],
       },
       // store
       observacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
       eliminarObservacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
       modificarObservacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
 
       dialogAEditarEstudiante: false,
 
-      reglasNumeros: [(v) => !!v || 'Requerido', (v) => /^[0-9]+$/.test(v) || 'Solo numeros'],
+      reglasNumeros: [
+        (v) => !!v || "Requerido",
+        (v) => /^[0-9]+$/.test(v) || "Solo numeros",
+      ],
       reglasNota: [
-        (v) => !!v || 'Requerido',
-        (v) => /^[0-9]+$/.test(v) || 'Solo numeros',
-        (v) => (v >= 50 && v <= 70) || 'Nota superior a 50 y menor a 70 (incluyendolos)',
+        (v) => !!v || "Requerido",
+        (v) => /^[0-9]+$/.test(v) || "Solo numeros",
+        (v) =>
+          (v >= 50 && v <= 70) ||
+          "Nota superior a 50 y menor a 70 (incluyendolos)",
       ],
       form_EditarEstudianteValido: true,
       form_añadirObservacionValido: true,
       form_solicitarEstudianteValido: true,
 
-      tipos: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
+      tipos: ["Positiva", "Negativa", "Informativa", "Otro"],
       enrutamiento: null,
       counter: 0,
       reglas_matricula: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'Matrícula solo debe incluir números',
-        (value) => /^[0-9]{10}$/.test(value) || 'La matrícula debe compuesta de 10 números',
+        (value) => !!value || "Requerido",
+        (value) =>
+          /^[0-9]+$/.test(value) || "Matrícula solo debe incluir números",
+        (value) =>
+          /^[0-9]{10}$/.test(value) ||
+          "La matrícula debe compuesta de 10 números",
       ],
       reglas_rut: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'El rut debe estar compuesto solo por números',
-        (value) => /^[0-9]{7,8}$/.test(value) || 'El rut debe contener entre 7 y 8 dígitos',
+        (value) => !!value || "Requerido",
+        (value) =>
+          /^[0-9]+$/.test(value) ||
+          "El rut debe estar compuesto solo por números",
+        (value) =>
+          /^[0-9]{7,8}$/.test(value) ||
+          "El rut debe contener entre 7 y 8 dígitos",
       ],
       reglas_Nombre: [
-        (value) => !!value || 'Requerido',
-        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || 'Nombre no Válido.',
-        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]{3,40}$/.test(v) || 'Largo del Nombre no Válido',
+        (value) => !!value || "Requerido",
+        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || "Nombre no Válido.",
+        (v) =>
+          /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]{3,40}$/.test(v) ||
+          "Largo del Nombre no Válido",
       ],
       reglas_Descripcion: [
-        (value) => !!value || 'Requerido',
-        (v) => /^\s.{1,500}$/.test(v) || 'Largo del Nombre no Válido',
+        (value) => !!value || "Requerido",
+        (v) => /^\s.{1,500}$/.test(v) || "Largo del Nombre no Válido",
       ],
       regla_Email: [
-        (value) => !!value || 'Requerido',
-        (v) => /.+@utalca\.cl/.test(v) || /.+@alumnos\.utalca\.cl/.test(v) || 'Correo no Válido',
+        (value) => !!value || "Requerido",
+        (v) =>
+          /.+@utalca\.cl/.test(v) ||
+          /.+@alumnos\.utalca\.cl/.test(v) ||
+          "Correo no Válido",
       ],
       regla_Contraseña: [
-        (value) => !!value || 'Requerido',
-        (v) => /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,}$/.test(v) || 'Contraseña muy corta',
+        (value) => !!value || "Requerido",
+        (v) =>
+          /^[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,}$/.test(v) ||
+          "Contraseña muy corta",
       ],
       regla_anio: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'El año debe estar compuesto solo por numeros',
-        (value) => value <= new Date().getFullYear() || 'El año no debe ser mayor al actual',
-        (value) => value >= 1981 || 'El año no debe ser menor a 1981',
+        (value) => !!value || "Requerido",
+        (value) =>
+          /^[0-9]+$/.test(value) ||
+          "El año debe estar compuesto solo por numeros",
+        (value) =>
+          value <= new Date().getFullYear() ||
+          "El año no debe ser mayor al actual",
+        (value) => value >= 1981 || "El año no debe ser menor a 1981",
       ],
-      regla_categoria: [(value) => !!value || 'Requerido'],
+      regla_categoria: [(value) => !!value || "Requerido"],
     };
   },
   computed: {
-    ...mapState(['perfilEstudiante', 'usuario', 'admin', 'secretariaEscuela', 'profesor']),
+    ...mapState([
+      "perfilEstudiante",
+      "usuario",
+      "admin",
+      "secretariaEscuela",
+      "profesor",
+    ]),
 
     target() {
-      return '#hola';
+      return "#hola";
     },
     options() {
       return {
         duration: 300,
         offset: 23,
-        easing: 'linear',
+        easing: "linear",
       };
     },
   },
@@ -430,19 +449,25 @@ export default {
 
   methods: {
     volver() {
-      const auxruta = this.enrutamiento.split('');
+      const auxruta = this.enrutamiento.split("");
 
       if (auxruta[0] === 1 || auxruta[0] === 2) {
-        if (this.$store.state.usuario.usuario.rol == 'admin') {
-          this.$router.push({ path: `/administrador/semestres/${this.enrutamiento}` });
+        if (this.$store.state.usuario.usuario.rol == "admin") {
+          this.$router.push({
+            path: `/administrador/semestres/${this.enrutamiento}`,
+          });
         } else {
-          this.$router.push({ path: `/secretariaEscuela/semestres/${this.enrutamiento}` });
+          this.$router.push({
+            path: `/secretariaEscuela/semestres/${this.enrutamiento}`,
+          });
         }
-      } else if (this.$store.state.usuario.usuario.rol === 'admin') {
+      } else if (this.$store.state.usuario.usuario.rol === "admin") {
         this.$router.push({ path: `/administrador/${this.enrutamiento}` });
-      } else if (this.$store.state.usuario.usuario.rol === 'secretaria de escuela') {
+      } else if (
+        this.$store.state.usuario.usuario.rol === "secretaria de escuela"
+      ) {
         this.$router.push({ path: `/secretariaEscuela/${this.enrutamiento}` });
-      } else if (this.$store.state.usuario.usuario.rol === 'profesor') {
+      } else if (this.$store.state.usuario.usuario.rol === "profesor") {
         this.$router.push({ path: `/profesor/${this.enrutamiento}` });
       }
     },
@@ -464,10 +489,10 @@ export default {
               const element = response.observaciones[index];
 
               this.chartOptions = {
-                chart: { type: 'donut' },
+                chart: { type: "donut" },
                 animations: {
                   enabled: true,
-                  easing: 'easeinout',
+                  easing: "easeinout",
                   speed: 800,
                   animateGradually: { enabled: true, delay: 150 },
                   dynamicAnimation: {
@@ -475,8 +500,8 @@ export default {
                     speed: 350,
                   },
                 },
-                colors: ['#4ECDC4', '#FF6B6B', '#1A535C', '#2196F3'],
-                labels: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
+                colors: ["#4ECDC4", "#FF6B6B", "#1A535C", "#2196F3"],
+                labels: ["Positiva", "Negativa", "Informativa", "Otro"],
               };
 
               const observacion = {
@@ -494,13 +519,13 @@ export default {
           }
         })
         .catch((error) => {
-          console.log('error');
+          console.log("error");
         });
     },
     resetAgregarObservacion() {
       this.dialogAgregarObservacion = false;
-      this.observacion.titulo = '';
-      this.observacion.descripcion = '';
+      this.observacion.titulo = "";
+      this.observacion.descripcion = "";
     },
     agregarObservacion() {
       console.log(this.observacion);
@@ -527,10 +552,10 @@ export default {
     },
     resetEliminarObservacion() {
       this.dialogEliminarObservacion = false;
-      this.eliminarObservacion.id = '';
-      this.eliminarObservacion.id = '';
-      this.eliminarObservacion.fecha = '';
-      this.eliminarObservacion.descripcion = '';
+      this.eliminarObservacion.id = "";
+      this.eliminarObservacion.id = "";
+      this.eliminarObservacion.fecha = "";
+      this.eliminarObservacion.descripcion = "";
     },
     EliminarObservacion() {
       console.log(this.eliminarObservacion);
@@ -566,9 +591,9 @@ export default {
     cargarDatosEliminarObservacion(observacion) {
       this.dialogEliminarObservacion = true;
       this.eliminarObservacion = {
-        id: '',
-        titulo: '',
-        descripcion: '',
+        id: "",
+        titulo: "",
+        descripcion: "",
       };
       this.eliminarObservacion.id = observacion.id;
       this.eliminarObservacion.titulo = observacion.titulo;
@@ -612,7 +637,7 @@ export default {
     },
     cargarDatosModificarObservacion(observacion) {
       this.dialogModificarObservacion = true;
-      this.modificarObservacion = { id: '', titulo: '', descripcion: '' };
+      this.modificarObservacion = { id: "", titulo: "", descripcion: "" };
       this.modificarObservacion.id = observacion.id;
       this.modificarObservacion.titulo = observacion.titulo;
       this.modificarObservacion.fecha = observacion.fecha;
@@ -620,10 +645,10 @@ export default {
     },
     resetModificarObservacion() {
       this.dialogModificarObservacion = false;
-      this.modificarObservacion.id = '';
-      this.modificarObservacion.titulo = '';
-      this.modificarObservacion.fecha = '';
-      this.modificarObservacion.descripcion = '';
+      this.modificarObservacion.id = "";
+      this.modificarObservacion.titulo = "";
+      this.modificarObservacion.fecha = "";
+      this.modificarObservacion.descripcion = "";
     },
   },
 };

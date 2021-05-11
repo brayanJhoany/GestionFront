@@ -14,7 +14,15 @@
           width="45"
         />-->
         <!-- Boton que llamará al panel lateral-->
-        <v-btn class="ma-2" fab elevation="3" small dark color="white" @click="drawel">
+        <v-btn
+          class="ma-2"
+          fab
+          elevation="3"
+          small
+          dark
+          color="white"
+          @click="drawel"
+        >
           <v-icon color="primary" :class="icono == true ? 'd-flex' : 'd-none'"
             >fas fa-list-ul</v-icon
           >
@@ -23,31 +31,25 @@
           >
         </v-btn>
       </div>
-        <div class="d-flex align-center ml-5" style="color: white;">
-            <h3><strong>{{ $route.params.nombre }}</strong></h3>
-        </div>
+      <div class="d-flex align-center ml-5" style="color: white">
+        <h3 class="difuminado letra">
+          <strong>{{ $route.params.nombre }}</strong>
+        </h3>
+      </div>
       <v-spacer></v-spacer>
-        <v-btn
-        class="ma-2 rounded-pill"
-        outlined
-        color="white"
-        >
+      <v-btn class="ma-2 rounded-pill" outlined color="white">
         <i class="fas fa-user"></i>
-            <div class="ml-2" style="color: white;">
-                Brayan escobar
-            </div>
-        </v-btn>
-        
-        
+        <div class="ml-2" style="color: white">Brayan escobar</div>
+      </v-btn>
+
       <!-- Boton que abrira las notificaciones-->
-      
     </v-app-bar>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-import axios from 'axios';
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 
 export default {
   components: {},
@@ -56,44 +58,48 @@ export default {
       icono: false,
       // Varibales para Alertas
       timeout: 4000,
-      textoAlertas: '',
+      textoAlertas: "",
       alertaError: false,
       alertaExito: false,
-      user: '',
+      user: "",
       // Variables Dialog Contactar
       dialogContactar: false,
       keyContactar: 1,
       formContactar: true,
       cargando: false,
       // Variables para almacenar datos
-      listaRoles: ['Administrador', 'Secretaría de Escuela'],
+      listaRoles: ["Administrador", "Secretaría de Escuela"],
       listaAdmin: [],
       listaSecEscuela: [],
       listaAdminAux: [],
       listaSecEscuelaAux: [],
       datosContactar: [
-        { rolDestinatario: '' },
+        { rolDestinatario: "" },
         { idDestinatario: null },
-        { motivo: '' },
-        { descripcion: '' },
+        { motivo: "" },
+        { descripcion: "" },
       ],
     };
   },
   beforeMount() {
     // this.obtenerUsuarios();
-    this.user = 'Administrador';
+    this.user = "Administrador";
   },
   methods: {
     drawel() {
       // console.log(this.$vuetify.breakpoint.name );
-      if (this.$vuetify.breakpoint.name === 'sm' || this.$vuetify.breakpoint.name === 'xs') {
+      if (
+        this.$vuetify.breakpoint.name === "sm" ||
+        this.$vuetify.breakpoint.name === "xs"
+      ) {
         this.$store.state.drawers.drawer = !this.$store.state.drawers.drawer;
         this.$store.state.drawers.miniVarianteAdm = false;
         // console.log(this.icono);
         this.icono = true;
       } else {
         this.$store.state.drawers.drawer = true;
-        this.$store.state.drawers.miniVarianteAdm = !this.$store.state.drawers.miniVarianteAdm;
+        this.$store.state.drawers.miniVarianteAdm = !this.$store.state.drawers
+          .miniVarianteAdm;
         this.$store.state.drawerProfesor = !this.$store.state.drawerProfesor;
         this.icono = this.$store.state.drawerProfesor;
       }
@@ -101,3 +107,15 @@ export default {
   },
 };
 </script>
+<style scoped>
+.difuminado {
+  text-shadow: #000000 2px 2px 3px;
+}
+.letra {
+  font-size: 125%;
+}
+.activacion {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+</style>

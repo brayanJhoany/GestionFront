@@ -12,38 +12,34 @@
             md="6"
             lg="4"
           >
-            <v-card class="mx-auto " max-width="400" outlined>
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <v-list-item-title class="headline mb-1">
-                    <a @click="redireccion(card.nombre)">
-                      {{ card.nombre }} 
-                    </a>
-                  </v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-avatar tile size="80" color="grey"
-                  ><v-icon> {{ card.icono }}</v-icon>
-                </v-list-item-avatar>
-              </v-list-item>
-              <v-card-actions> </v-card-actions>
-            </v-card>
             <v-card
-                class="mx-auto"
-                max-width="344"
-                @click="redireccion(card.nombre)"
+              class="mx-auto"
+              max-width="344"
+              @click="redireccion(card.nombre)"
             >
-                <v-img
-                src="@/assets/bt.png"
+              <v-img
+                v-if="card.nombre == 'Bitacora'"
+                src="@/assets/btc1.png"
+                height="50%"
+              >
+              </v-img>
+              <v-img
+                v-if="card.nombre == 'Syllabus'"
+                src="@/assets/syl.png"
                 height="100%"
-                
-                >
-                </v-img>
-                <v-card-title class="accent" >
-                    <div style="color: white;">
-                        <strong>{{ card.nombre }}</strong> 
-                    </div>
-                </v-card-title>
-    
+              >
+              </v-img>
+              <v-img
+                v-if="card.nombre == 'Plan de clases'"
+                src="@/assets/btc.png"
+                height="100%"
+              >
+              </v-img>
+              <v-card-title class="accent">
+                <div style="color: white">
+                  <strong>{{ card.nombre }}</strong>
+                </div>
+              </v-card-title>
             </v-card>
           </v-col>
         </v-row>
@@ -54,26 +50,26 @@
   </v-container>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex';
-import axios from 'axios';
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 
 export default {
   data() {
     return {
       // curso: [{ id: '' }, { nombre: '' }, { seccion: '' }],
-      cursoNombre: 'pedro',
+      cursoNombre: "pedro",
       cards: [
         {
-          nombre: 'Bitacora',
-          icono: 'fas fa-school',
+          nombre: "Bitacora",
+          icono: "clipboard-solid.svg",
         },
         {
-          nombre: 'Syllabus',
-          icono: 'fas fa-school',
+          nombre: "Syllabus",
+          icono: "clipboard-solid.svg",
         },
         {
-          nombre: 'Planificación',
-          icono: 'fas fa-school',
+          nombre: "Plan de clases",
+          icono: "clipboard-solid.svg",
         },
       ],
     };
@@ -104,9 +100,9 @@ export default {
   // },
   methods: {
     redireccion(accion) {
-      if (accion === 'Bitacora') {
+      if (accion === "Bitacora") {
         this.$router.push({
-          name: 'Bitacora',
+          name: "Bitacora",
           params: {
             id: this.$route.params.id,
             nombre: this.$route.params.nombre,
@@ -114,9 +110,9 @@ export default {
           },
         });
       }
-      if (accion === 'Syllabus') {
+      if (accion === "Syllabus") {
         this.$router.push({
-          name: 'Syllabus',
+          name: "Syllabus",
           params: {
             id: this.$route.params.id,
             nombre: this.$route.params.nombre,
@@ -124,9 +120,9 @@ export default {
           },
         });
       }
-      if (accion === 'Planificación') {
+      if (accion === "Plan de clases") {
         this.$router.push({
-          name: 'PlanDeClases',
+          name: "PlanDeClases",
           params: {
             id: this.$route.params.id,
             nombre: this.$route.params.nombre,

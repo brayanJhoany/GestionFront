@@ -11,26 +11,47 @@
   >
     <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
       <template v-slot:activator="{ on }">
-        <v-list-item class="px-2 py-2 difuminado" active-class="activacion" v-on="on">
+        <v-list-item
+          class="px-2 py-2 difuminado"
+          active-class="activacion"
+          link
+          v-on="on"
+          :to="{
+            name: 'Cursos',
+          }"
+        >
           <!--<v-list-item-avatar>
             <v-img src="@/assets/Globales/estudiante.jpg"></v-img>
           </v-list-item-avatar>-->
-          <v-list-item-title class="white--text letra pl-2 center"
-            ><strong>Cursos</strong></v-list-item-title
-          >
+          <v-list-item-content>
+            <v-list-item-title class="white--text letra pl-2 center">
+              <i class="fas fa-chalkboard-teacher mr-6"></i>
+              <strong> Mis Cursos</strong></v-list-item-title
+            >
+          </v-list-item-content>
         </v-list-item>
       </template>
+      <span><strong>Mis Cursos</strong></span>
     </v-tooltip>
     <v-divider></v-divider>
 
-    <v-list style=" margine-right: 0; margine-left:0;" v-for="curso in cursos" :key="curso.id">
+    <v-list
+      style="margine-right: 0; margine-left: 0"
+      v-for="curso in cursos"
+      :key="curso.id"
+    >
       <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
         <template v-slot:activator="{ on }">
           <v-list-item
             v-on="on"
             :to="{
               name: 'Curso',
-              params: { id: curso.id, nombre: curso.nombre, seccion: curso.seccion, curso: curso },
+              params: {
+                id: curso.id,
+                nombre: curso.nombre,
+                seccion: curso.seccion,
+                curso: curso,
+              },
             }"
             class="difuminado"
             active-class="activacion"
@@ -43,7 +64,9 @@
             >
           </v-list-item>
         </template>
-        <span><strong>Usuario</strong></span>
+        <span
+          ><strong>{{ curso.nombre }}</strong></span
+        >
       </v-tooltip>
     </v-list>
 
@@ -68,24 +91,24 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-import axios from 'axios';
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 
 export default {
-  name: 'Navegacion',
+  name: "Navegacion",
   data() {
     return {
       drawer: true,
-      on: '',
+      on: "",
       cursos: [],
       cursosAux: [],
     };
   },
   computed: {
-    ...mapState(['drawers']),
+    ...mapState(["drawers"]),
   },
   icons: {
-    iconfont: ['mdiSvg', 'mdi', 'mdiSvg', 'md', 'fa', 'fa4', 'faSvg'],
+    iconfont: ["mdiSvg", "mdi", "mdiSvg", "md", "fa", "fa4", "faSvg"],
   },
   beforeMount() {
     this.obtenerCursos();
