@@ -1,12 +1,7 @@
 <template>
   <v-container fluid>
-    <!-- <v-btn block @click="volver">
-      <v-icon class="pr-2" color="primary"> fas fa-arrow-circle-left</v-icon>
-      volver
-    </v-btn> -->
     <v-row>
-      <!-- <v-col cols="12" md="2" align-self="end"> </v-col> -->
-
+      <v-col cols="12" md="2"   align-self="end"> </v-col>
       <v-col cols="12" md="8">
         <v-row>
           <v-col cols="12" sm="0" md="1"> </v-col>
@@ -36,25 +31,6 @@
                     </div>
                   </v-card-title>
                 </v-col>
-                <!--<v-col cols="12" md="8" xl="9" class="align-self-center ">
-                  <v-overlay :absolute="true" :value="cargando">
-                    <v-progress-circular indeterminate size="64"> </v-progress-circular>
-                  </v-overlay>
-                  <v-row justify="center" v-if="validacionObservaciones">
-                    <div id="chart">
-                      <apexchart
-                        ref="realtimeChart"
-                        type="donut"
-                        :options="chartOptions"
-                        :series="series"
-                        :width="$vuetify.breakpoint.lgAndDown ? 300 : 380"
-                      ></apexchart>
-                    </div>
-                  </v-row>
-                  <v-row justify="center" v-if="validacionObservacionesFalse == false">
-                    <h3>No existen observaciones</h3>
-                  </v-row>
-                </v-col>-->
               </v-row>
             </v-card>
             <h3 class="white--text">/</h3>
@@ -65,7 +41,7 @@
                 color="success"
                 large
               >
-                <v-card :color="observacion.color">
+                <v-card color="success">
                   <v-card-title class="headline  text--center" primary-title>
                     <div class="v-markdown">
                       <h5 class="blue--text ">{{ observacion.titulo }}</h5>
@@ -140,8 +116,9 @@
           <v-col cols="0" sm="0" md="1"> </v-col>
         </v-row>
       </v-col>
-      <!-- <v-col cols="12" md="2"> </v-col> -->
+      <v-col cols="12" md="2"> </v-col>  
     </v-row>
+
     <v-dialog v-model="dialogAgregarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
@@ -159,9 +136,31 @@
               label="Titulo"
               outlined
               color="secondary"
-              prepend-inner-icon="fas fa-heading"
+             
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
+           <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"> 
+                  <template v-slot:activator="{ on }">
+                      <v-text-field v-model="fechaIni" 
+                      readonly  v-on="on" >
+                      </v-text-field>
+                  </template>
+                  <v-date-picker
+                  ref="picker"
+                  outlined
+                  v-model="fechaIni"
+                  :max="new Date().toISOString().substr(0, 10)"
+                  min="1950-01-01"
+                  @change="save"
+                  @input="menu = false"
+                  
+                  ></v-date-picker>
+
+              </v-menu>
+            
             <v-textarea
               v-model="observacion.descripcion"
               outlined
@@ -194,6 +193,26 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <!-- <v-dialog
+    ref="dialog"
+    v-model="dialogAgregarObservacion"
+    persistent
+    width="290px"
+  >
+    <template v-slot:activator="{ on }">
+      <v-text-field
+        v-model="fechaIni"
+        label="Picker in dialog"
+        prepend-icon="event"
+        readonly
+        v-on="on"
+      ></v-text-field>
+    </template>
+    <v-date-picker v-model="fechaIni" scrollable>
+      <div class="flex-grow-1"></div>
+      <v-btn text color="primary" @click="modal = false">OK</v-btn>
+    </v-date-picker>
+  </v-dialog> -->
     <v-dialog
       transition="scroll-y-reverse-transition"
       v-model="dialogEliminarObservacion"
@@ -269,6 +288,26 @@
             color="secondary"
             prepend-inner-icon="fas fa-heading"
           ></v-text-field>
+          <v-menu ref="menu" v-model="menu2" :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"> 
+                  <template v-slot:activator="{ on }">
+                      <v-text-field v-model="fechaTer" 
+                      readonly  v-on="on" >
+                      </v-text-field>
+                  </template>
+                  <v-date-picker
+                  ref="picker"
+                  v-model="fechaTer"
+                  :max="new Date().toISOString().substr(0, 10)"
+                  min="1950-01-01"
+                  @change="save"
+                  @input="menu2 = false"
+                  
+                  ></v-date-picker>
+
+              </v-menu>
           <v-textarea
             v-model="modificarObservacion.descripcion"
             outlined
@@ -344,6 +383,19 @@ export default {
         colors: ['#4ECDC4', '#FF6B6B', '#1A535C', '#2196F3'],
         labels: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
       },
+      //fechas
+       rules: [
+        value => !!value || 'Requerido',
+        value => value <= new Date().getFullYear()|| 'El año no puede ser mayor al actual',
+        value => value >= 1981 || 'El año no puede ser menor a 1981',
+        ],
+        unAnhoVariable: true,
+        rangoAnhosVariable: true,
+        fechaIni: new Date().toISOString().substr(0, 10),
+        fechaTer: new Date().toISOString().substr(0, 10),
+        menu: false,
+
+        menu2:true,
       // store
       observacion: {
         titulo: '',
@@ -370,19 +422,6 @@ export default {
       form_añadirObservacionValido: true,
       form_solicitarEstudianteValido: true,
 
-      tipos: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
-      enrutamiento: null,
-      counter: 0,
-      reglas_matricula: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'Matrícula solo debe incluir números',
-        (value) => /^[0-9]{10}$/.test(value) || 'La matrícula debe compuesta de 10 números',
-      ],
-      reglas_rut: [
-        (value) => !!value || 'Requerido',
-        (value) => /^[0-9]+$/.test(value) || 'El rut debe estar compuesto solo por números',
-        (value) => /^[0-9]{7,8}$/.test(value) || 'El rut debe contener entre 7 y 8 dígitos',
-      ],
       reglas_Nombre: [
         (value) => !!value || 'Requerido',
         (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || 'Nombre no Válido.',
@@ -422,13 +461,24 @@ export default {
         easing: 'linear',
       };
     },
+    getUserValido(){
+            return this.$store.getters.usuario;
+        }
   },
+  watch: {
+         menu (val) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+      },
+    },
 
   beforeMount() {
     this.obtenerObservaciones();
   },
 
   methods: {
+     save (date) {
+        this.$refs.menu.save(date)
+      },
     volver() {
       const auxruta = this.enrutamiento.split('');
 
@@ -447,13 +497,9 @@ export default {
       }
     },
     obtenerObservaciones() {
-      let idUsuario = this.$store.state.usuario.id;
-      if(idUsuario == null){
-        console.log("entre");
-        idUsuario=1;
-      }
+      var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observaciones";
+      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observaciones";
       this.cargando = true;
       this.seriesaux = [0, 0, 0, 0];
 
@@ -507,20 +553,18 @@ export default {
       this.dialogAgregarObservacion = false;
       this.observacion.titulo = '';
       this.observacion.descripcion = '';
+       this.fechaIni= new Date().toISOString().substr(0, 10)
     },
     agregarObservacion() {
-      let idUsuario = this.$store.state.usuario.id;
-      if(idUsuario == null){
-        console.log("entre");
-        idUsuario=1;
-      }
+      var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion";
+      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion";
       const request = {
         titulo: this.observacion.titulo,
         descripcion: this.observacion.descripcion,
+        fecha: this.fechaIni
       };
-      console.log("agregar")
+      console.log(this.fechaIni);
       axios.post(url, request, this.$store.state.config).then((result) => {
         this.resetAgregarObservacion();
         console.log(result.data);
@@ -544,13 +588,9 @@ export default {
       this.eliminarObservacion.descripcion = '';
     },
     EliminarObservacion() {
-      let idUsuario = this.$store.state.usuario.id;
-      if(idUsuario == null){
-        console.log("entre");
-        idUsuario=1;
-      }
+     var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.eliminarObservacion.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.eliminarObservacion.id;
       axios
         .delete(url, this.$store.state.config)
         .then((result) => {
@@ -592,22 +632,17 @@ export default {
       this.eliminarObservacion.descripcion = observacion.descripcion;
     },
     updateObservacion() {
-      let idUsuario = this.$store.state.usuario.id;
-      if(idUsuario == null){
-        console.log("entre");
-        idUsuario=1;
-      }
+      var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
+      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
       const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
+        fecha : this.fechaTer
       };
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {
-          // console.log(result);
-          // console.log(result.data);
           this.resetModificarObservacion();
           this.obtenerObservaciones(); // ver como actualizar la app sin  llamar a la bd
         })
@@ -645,6 +680,7 @@ export default {
       this.modificarObservacion.titulo = '';
       this.modificarObservacion.fecha = '';
       this.modificarObservacion.descripcion = '';
+      this.fechaIni= new Date().toISOString().substr(0, 10);
     },
   },
 };

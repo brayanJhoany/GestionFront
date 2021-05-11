@@ -16,12 +16,11 @@
             <v-img src="@/assets/Globales/estudiante.jpg"></v-img>
           </v-list-item-avatar>-->
           <v-list-item-title class="white--text letra pl-2 center"
-            ><strong>Cursos</strong></v-list-item-title
+            ><strong>Mis cursos</strong></v-list-item-title
           >
         </v-list-item>
       </template>
     </v-tooltip>
-     <strong class="white--text letra pl-2 px-2 py-1 ml-15 difuminado ">Cursos</strong> 
     <v-divider></v-divider>
 
     <v-list style=" margine-right: 0; margine-left:0;" v-for="curso in cursos" :key="curso.id">
@@ -84,61 +83,22 @@ export default {
   },
   computed: {
     ...mapState(['drawers']),
+     getUserValido(){
+            return this.$store.getters.usuario;
+        }
   },
   icons: {
     iconfont: ['mdiSvg', 'mdi', 'mdiSvg', 'md', 'fa', 'fa4', 'faSvg'],
   },
   created() {
-    this.getUser();
     this.obtenerCursos();
   },
   methods: {
-        getUser(){
-      console.log("primero");
-      const url = `${this.$store.state.rutaDinamica}profesor/1`;
-      axios.get(url)
-        .then((result) => {
-          const response = result.data;
-          if (result.data.error === false) {
-            this.$store.state.usuario = response.profesor;
-          }
-        })
-        .catch((error) => {
-          // console.log(error);
-          // if (error.message == 'Network Error') {
-          //   this.alertError = true;
-          //   this.cargando = false;
-          //   this.textoError = 'Error al cargar los datos, inténtelo más tarde'
-          // } else {
-          //   if (error.response.data.success == false) {
-          //     switch (error.response.data.code) {
-          //       case 101:
-          //           //console.log(error.response.data.code +' '+ error.response.data.message);
-          //           //console.log(error.response.data);
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //       default:
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //     }
-          //   }
-          // }
-        });
-    },
     obtenerCursos() {
-      console.log("segundo");
-      let idUsuario = this.$store.state.usuario.id;
-      if(idUsuario == null){
-        console.log("entre");
-        idUsuario=1;
-      }
+      var usuario = this.getUserValido;
+
       this.cursosAux = [];
-      const url = this.$store.state.rutaDinamica +"profesor/"+ idUsuario+"/cursos";
-      // console.log(url);
+      const url = this.$store.state.rutaDinamica +"profesor/"+usuario.id+"/cursos";
       axios.get(url)
         .then((result) => {
           const response = result.data;
@@ -153,11 +113,9 @@ export default {
               this.cursosAux[index] = curso;
             }
             this.cursos = this.cursosAux;
-            console.log("holas");
           }
         })
         .catch((error) => {
-          console.log(error);
           // if (error.message == 'Network Error') {
           //   this.alertError = true;
           //   this.cargando = false;
