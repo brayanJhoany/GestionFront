@@ -136,6 +136,7 @@
             <v-text-field
               v-model="observacion.titulo"
               label="Titulo"
+              outlined
               color="secondary"
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
@@ -211,11 +212,8 @@
               ? 'font-size: 90%;'
               : 'font-size: 100%;'
           "
-          >Esta seguro que desea eliminar la siguiente
-          observacion?</v-card-title
-          :style="$vuetify.breakpoint.smAndDown ? 'font-size: 90%;' : 'font-size: 100%;'"
-          >Esta seguro que desea eliminar la siguiente observación?</v-card-title
-        >
+          >Esta seguro que desea eliminar la 
+          observación</v-card-title>
         <div class="px-5 mt-5  pb-4" style="text-align:right;">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown ? true : false"
@@ -259,6 +257,7 @@
             ></v-text-field>
            <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
               transition="scale-transition"
+              outlined
               offset-y
               min-width="290px"> 
                   <template v-slot:activator="{ on }">
@@ -303,7 +302,7 @@
                 color="secondary"
                 class="ml-2"
                 :loading="cargando"
-                @click="agregarObservacion"
+                @click="updateObservacion"
               >
                 <h4 class="white--text">Agregar</h4>
               </v-btn>
@@ -546,23 +545,6 @@ export default {
           this.obtenerObservaciones(); // crea un metodo para la eliminacion
         })
         .catch((error) => {
-          // if (error.message == 'Network Error') {
-          //   // console.log(error)
-          //   this.alertError = true;
-          //   this.textoError = 'Error al eliminar la observación, inténtelo más tarde.';
-          //   this.resetEliminarObservacion();
-          // } else if (error.response.data.success == false) {
-          //   // console.log(error.response.data.code +' '+ error.response.data.message);
-          //   // console.log(error.response.data);
-          //   this.textoError = error.response.data.message;
-          //   this.alertError = true;
-          //   this.resetEliminarObservacion();
-          // } else {
-          //   // console.log(error)
-          //   this.alertError = true;
-          //   this.textoError = 'Error al eliminar la observación, inténtelo más tarde.';
-          //   this.resetEliminarObservacion();
-          // }
         });
     },
     cargarDatosEliminarObservacion(observacion) {
@@ -581,7 +563,7 @@ export default {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
       const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
-      const request = {
+     const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
         fecha : this.fechaUpObs
@@ -593,23 +575,6 @@ export default {
           this.obtenerObservaciones(); // ver como actualizar la app sin  llamar a la bd
         })
         .catch((error) => {
-          // if (error.message == 'Network Error') {
-          //   // console.log(error)
-          //   this.alertError = true;
-          //   this.textoError = 'Error al modificar la observación, inténtelo más tarde.';
-          //   this.resetModificarObservacion();
-          // } else if (error.response.data.success == false) {
-          //   // console.log(error.response.data.code +' '+ error.response.data.message);
-          //   // console.log(error.response.data);
-          //   this.textoError = error.response.data.message;
-          //   this.alertError = true;
-          //   this.resetModificarObservacion();
-          // } else {
-          //   // console.log(error)
-          //   this.alertError = true;
-          //   this.textoError = 'Error al modificar la observación, inténtelo más tarde.';
-          //   this.resetModificarObservacion();
-          // }
         });
     },
     cargarDatosModificarObservacion(observacion) {
