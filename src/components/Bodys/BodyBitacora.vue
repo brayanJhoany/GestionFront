@@ -1,33 +1,44 @@
 <template>
   <v-container fluid>
+    <Volver />
+    <!-- <v-btn block @click="volver">
+      <v-icon class="pr-2" color="primary"> fas fa-arrow-circle-left</v-icon>
+      volver
+    </v-btn> -->
     <v-row>
-      <v-col cols="12" md="2"   align-self="end"> </v-col>
+      <v-col cols="12" md="2"> </v-col>
+
       <v-col cols="12" md="8">
         <v-row>
           <v-col cols="12" sm="0" md="1"> </v-col>
           <v-col cols="12" sm="12" md="10">
             <v-card class="mt-13" color="info">
               <v-row>
-                <v-col cols="12" >
-                  <v-card-title class="headline text--center " primary-title>
+                <v-col cols="12">
+                  <v-card-title class="headline text--center" primary-title>
                     <div>
-                        <strong
-                         style="font-size:25px;color:#3F51B5;"
-                        >Observaciones</strong >
+                      <strong class="blue--text letra">Bitácora</strong>
                     </div>
                     <v-spacer></v-spacer>
-                    <div style="text-align:right;">
-                         <v-tooltip bottom color="primary">
-                                <template v-slot:activator="{ on }">
-                                    <v-btn 
-                                    :small="$vuetify.breakpoint.lgAndDown ? true : false"
-                                    fab bottom left
-                                    color="accent" v-on="on" @click="dialogAgregarObservacion = true " >
-                                        <v-icon color="white">fas fa-plus</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span><strong>Agregar observacion</strong></span>
-                          </v-tooltip>
+                    <div style="text-align: right">
+                      <v-tooltip bottom color="primary">
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            :small="
+                              $vuetify.breakpoint.lgAndDown ? true : false
+                            "
+                            v-on="on"
+                            fab
+                            bottom
+                            left
+                            color="accent"
+                            @click="dialogAgregarObservacion = true"
+                          >
+                            <v-icon color="white">fas fa-plus</v-icon>
+                          </v-btn>
+                        </template>
+                        <span><strong>Añadir observación</strong></span>
+                      </v-tooltip>
                     </div>
                   </v-card-title>
                 </v-col>
@@ -42,29 +53,28 @@
                 large
               >
                 <v-card color="success">
-                  <v-card-title class="headline  text--center" primary-title>
+                  <v-card-title class="headline text--center" primary-title>
                     <div class="v-markdown">
-                      <h5 class="white--text">{{ observacion.titulo }}</h5>
+                      <h5 class="white--text difuminado">
+                        {{ observacion.titulo }}
+                      </h5>
                     </div>
                   </v-card-title>
-                  <v-container style="background-color:white;">
-                    <v-row style="margin: 0; padding: 0;">
-                      <v-col  cols="4" lg="3" xl="2" style="margin: 0; padding: 0;font-size: 18px;">
-
-                        <h5 style="margin: 0; padding: 0;font-size: 18px;">Fecha:</h5>
-                      </v-col>
-
-                      <v-col cols="8" lg="9" xl="10" style="margin: 0; padding: 0;font-size: 18px;">
-                         <h5 style="margin: 0; padding: 0;font-size: 18px;"> {{ observacion.fecha }}</h5>
+                  <v-container style="background-color: white">
+                    <v-row style="margin: 0; padding: 0">
+                      <v-col cols="12" style="margin: 0; padding: 0">
+                        <h5>Fecha : {{ observacion.fecha }}</h5>
                       </v-col>
                     </v-row>
-                    <h5 style="margin: 0; padding: 0;font-size: 18px;"> Descripción</h5>
-                    <!-- <h5 class="mt-4" style="margin: 0; padding: 0;font-size: 20px;"> Descripción</h5> -->
-                    <div class="DIV  mb-2" style=" height:150px; overflow: auto;font-size: 20px; font-size: 90%">
-                      <h5 style="margin: 0; padding: 0; font-size: 16px;">   {{ observacion.descripcion }}</h5>
+                    <h5 class="mt-4 mb-1">Descripción</h5>
+                    <div
+                      class="DIV mb-2"
+                      style="height: 150px; overflow: auto; font-size: 90%"
+                    >
+                      {{ observacion.descripcion }}
                     </div>
 
-                    <div style="text-align:right;">
+                    <div style="text-align: right">
                       <v-tooltip bottom color="primary">
                         <template v-slot:activator="{ on }">
                           <v-btn
@@ -74,11 +84,11 @@
                             small
                             depressed
                             class="mr-2 py-2"
-                            @click="cargarDatosModificarObservacion(observacion)"
+                            @click="
+                              cargarDatosModificarObservacion(observacion)
+                            "
                           >
-                            <v-icon color="primary">
-                              fas fa-edit
-                            </v-icon>
+                            <v-icon color="primary"> fas fa-edit </v-icon>
                           </v-btn>
                         </template>
                         <span><strong>Editar</strong></span>
@@ -94,9 +104,7 @@
                             class="mr-2 py-2"
                             @click="cargarDatosEliminarObservacion(observacion)"
                           >
-                            <v-icon color="warning">
-                              fas fa-trash-alt
-                            </v-icon>
+                            <v-icon color="warning"> fas fa-trash-alt </v-icon>
                           </v-btn>
                         </template>
                         <span><strong>Eliminar</strong></span>
@@ -116,12 +124,12 @@
     <v-dialog v-model="dialogAgregarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Agregar observación</h5>
+          <h5 class="white--text">Agregar observación</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
           <v-form
             ref="form_añadirObservacion"
-            style="margin:0;padding:0;"
+            style="margin: 0; padding: 0"
             v-model="form_añadirObservacionValido"
             lazy-validation
           >
@@ -160,7 +168,7 @@
               label="Descripción"
               :rules="[(v) => !!v || 'La descripción es requerida.']"
             ></v-textarea>
-            <div class="pb-1" style="text-align:right;">
+            <div class="pb-1" style="text-align: right">
               <v-btn
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
@@ -193,11 +201,18 @@
     >
       <v-card class="mx-auto" max-width="500px">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Eliminar Observacion</h5>
+          <h5 class="white--text">Eliminar Observacion</h5>
         </v-card-title>
 
         <v-card-title
           class="text-justify"
+          :style="
+            $vuetify.breakpoint.smAndDown
+              ? 'font-size: 90%;'
+              : 'font-size: 100%;'
+          "
+          >Esta seguro que desea eliminar la siguiente
+          observacion?</v-card-title
           :style="$vuetify.breakpoint.smAndDown ? 'font-size: 90%;' : 'font-size: 100%;'"
           >Esta seguro que desea eliminar la siguiente observación?</v-card-title
         >
@@ -226,7 +241,7 @@
     <v-dialog v-model="dialogModificarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text ">Modificar observacion</h5>
+          <h5 class="white--text">Modificar observacion</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
            <v-form
@@ -301,10 +316,14 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-import axios from 'axios';
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
+import Volver from "@/components/Globales/Volver.vue";
 
 export default {
+  components: {
+    Volver,
+  },
   data() {
     return {
       dialogAgregarObservacion: false,
@@ -334,16 +353,16 @@ export default {
         landscape: false,
       // datos para 
       observacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
       eliminarObservacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
       modificarObservacion: {
-        titulo: '',
-        descripcion: '',
+        titulo: "",
+        descripcion: "",
       },
 
       dialogAEditarEstudiante: false,
@@ -354,25 +373,27 @@ export default {
       form_solicitarEstudianteValido: true,
 
       reglas_Nombre: [
-        (value) => !!value || 'Requerido',
-        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || 'Nombre no Válido.',
-        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]{3,40}$/.test(v) || 'Largo del Nombre no Válido',
+        (value) => !!value || "Requerido",
+        (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || "Nombre no Válido.",
+        (v) =>
+          /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]{3,40}$/.test(v) ||
+          "Largo del Nombre no Válido",
       ],
       reglas_Descripcion: [
-        (value) => !!value || 'Requerido',
-        (v) => /^\s.{1,500}$/.test(v) || 'Largo del Nombre no Válido',
+        (value) => !!value || "Requerido",
+        (v) => /^\s.{1,500}$/.test(v) || "Largo del Nombre no Válido",
       ],
     };
   },
   computed: {
     target() {
-      return '#hola';
+      return "#hola";
     },
     options() {
       return {
         duration: 300,
         offset: 23,
-        easing: 'linear',
+        easing: "linear",
       };
     },
     getUserValido(){
@@ -400,19 +421,25 @@ export default {
         this.$refs.menu.save(date)
       },
     volver() {
-      const auxruta = this.enrutamiento.split('');
+      const auxruta = this.enrutamiento.split("");
 
       if (auxruta[0] === 1 || auxruta[0] === 2) {
-        if (this.$store.state.usuario.usuario.rol == 'admin') {
-          this.$router.push({ path: `/administrador/semestres/${this.enrutamiento}` });
+        if (this.$store.state.usuario.usuario.rol == "admin") {
+          this.$router.push({
+            path: `/administrador/semestres/${this.enrutamiento}`,
+          });
         } else {
-          this.$router.push({ path: `/secretariaEscuela/semestres/${this.enrutamiento}` });
+          this.$router.push({
+            path: `/secretariaEscuela/semestres/${this.enrutamiento}`,
+          });
         }
-      } else if (this.$store.state.usuario.usuario.rol === 'admin') {
+      } else if (this.$store.state.usuario.usuario.rol === "admin") {
         this.$router.push({ path: `/administrador/${this.enrutamiento}` });
-      } else if (this.$store.state.usuario.usuario.rol === 'secretaria de escuela') {
+      } else if (
+        this.$store.state.usuario.usuario.rol === "secretaria de escuela"
+      ) {
         this.$router.push({ path: `/secretariaEscuela/${this.enrutamiento}` });
-      } else if (this.$store.state.usuario.usuario.rol === 'profesor') {
+      } else if (this.$store.state.usuario.usuario.rol === "profesor") {
         this.$router.push({ path: `/profesor/${this.enrutamiento}` });
       }
     },
@@ -436,10 +463,10 @@ export default {
               const element = response.observaciones[index];
 
               this.chartOptions = {
-                chart: { type: 'donut' },
+                chart: { type: "donut" },
                 animations: {
                   enabled: true,
-                  easing: 'easeinout',
+                  easing: "easeinout",
                   speed: 800,
                   animateGradually: { enabled: true, delay: 150 },
                   dynamicAnimation: {
@@ -447,8 +474,8 @@ export default {
                     speed: 350,
                   },
                 },
-                colors: ['#4ECDC4', '#FF6B6B', '#1A535C', '#2196F3'],
-                labels: ['Positiva', 'Negativa', 'Informativa', 'Otro'],
+                colors: ["#4ECDC4", "#FF6B6B", "#1A535C", "#2196F3"],
+                labels: ["Positiva", "Negativa", "Informativa", "Otro"],
               };
 
               const observacion = {
@@ -466,7 +493,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log('error');
+          console.log("error");
         });
     },
     resetAgregarObservacion() {
@@ -501,10 +528,10 @@ export default {
     },
     resetEliminarObservacion() {
       this.dialogEliminarObservacion = false;
-      this.eliminarObservacion.id = '';
-      this.eliminarObservacion.id = '';
-      this.eliminarObservacion.fecha = '';
-      this.eliminarObservacion.descripcion = '';
+      this.eliminarObservacion.id = "";
+      this.eliminarObservacion.id = "";
+      this.eliminarObservacion.fecha = "";
+      this.eliminarObservacion.descripcion = "";
     },
     EliminarObservacion() {
      var usuario = this.getUserValido;
@@ -541,9 +568,9 @@ export default {
     cargarDatosEliminarObservacion(observacion) {
       this.dialogEliminarObservacion = true;
       this.eliminarObservacion = {
-        id: '',
-        titulo: '',
-        descripcion: '',
+        id: "",
+        titulo: "",
+        descripcion: "",
       };
       this.eliminarObservacion.id = observacion.id;
       this.eliminarObservacion.titulo = observacion.titulo;
@@ -587,7 +614,7 @@ export default {
     },
     cargarDatosModificarObservacion(observacion) {
       this.dialogModificarObservacion = true;
-      this.modificarObservacion = { id: '', titulo: '', descripcion: '' };
+      this.modificarObservacion = { id: "", titulo: "", descripcion: "" };
       this.modificarObservacion.id = observacion.id;
       this.modificarObservacion.titulo = observacion.titulo;
       this.modificarObservacion.fecha = observacion.fecha;
