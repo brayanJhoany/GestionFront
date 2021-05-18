@@ -136,7 +136,7 @@
             <v-text-field
               v-model="observacion.titulo"
               label="Titulo"
-              outlined
+              
               color="secondary"
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
@@ -151,7 +151,7 @@
                   </template>
                   <v-date-picker
                   ref="picker"
-                  outlined
+                  
                   v-model="fechaAddObs"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
@@ -164,7 +164,7 @@
             
             <v-textarea
               v-model="observacion.descripcion"
-              outlined
+              
               color="secondary"
               label="Descripción"
               :rules="[(v) => !!v || 'La descripción es requerida.']"
@@ -250,14 +250,12 @@
             <v-text-field
               v-model="modificarObservacion.titulo"
               label="Titulo"
-              outlined
               color="secondary"
              
               :rules="[(v) => !!v || 'El título es requerido']"
             ></v-text-field>
            <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
               transition="scale-transition"
-              outlined
               offset-y
               min-width="290px"> 
                   <template v-slot:activator="{ on }">
@@ -267,7 +265,7 @@
                   </template>
                   <v-date-picker
                   ref="picker"
-                  outlined
+                  
                   v-model="fechaUpObs"
                   :max="new Date().toISOString().substr(0, 10)"
                   min="1950-01-01"
@@ -281,7 +279,7 @@
             
             <v-textarea
               v-model="modificarObservacion.descripcion"
-              outlined
+              
               color="secondary"
               label="Descripción"
               :rules="[(v) => !!v || 'La descripción es requerida.']"
@@ -304,7 +302,7 @@
                 :loading="cargando"
                 @click="updateObservacion"
               >
-                <h4 class="white--text">Agregar</h4>
+                <h4 class="white--text">Modificar</h4>
               </v-btn>
             </div>
           </v-form>
