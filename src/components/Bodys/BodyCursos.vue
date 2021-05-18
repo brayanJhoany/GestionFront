@@ -24,7 +24,7 @@
             md="6"
             lg="4"
           >
-            <v-card class="mx-auto" max-width="400" outlined>
+            <v-card class="mx-auto" max-width="400" outlined @click="redireccion(card)">
               <v-card-title class="accent">
                 <div style="color: white"></div>
               </v-card-title>
