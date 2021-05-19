@@ -17,7 +17,7 @@
                 <v-col cols="12">
                   <v-card-title class="headline text--center" primary-title>
                     <div>
-                      <strong class="blue--text letra">Bitácora</strong>
+                      <strong class="blue--text letra" ref="bitacora_strong">Bitácora</strong>
                     </div>
                     <v-spacer></v-spacer>
                     <div style="text-align: right">
@@ -44,11 +44,19 @@
                 </v-col>
               </v-row>
             </v-card>
+
+            <v-row>
+              <v-col>
+                <v-alert v-model="show_alerta" transition="scale-transition" v-bind:color="alertColor" v-bind:type="alertType" style="width: 100%; margin-top: 20px;">{{alert_mensaje}}</v-alert> <!-- eug. -->
+              </v-col>
+            </v-row>
+
             <h3 class="white--text">/</h3>
             <v-timeline align-top dense>
               <v-timeline-item
                 v-for="(observacion, i) in observaciones"
                 :key="i"
+                :ref="'obs-'+i"
                 color="success"
                 large
               >
@@ -304,13 +312,14 @@
                 :loading="cargando"
                 @click="updateObservacion"
               >
-                <h4 class="white--text">Agregar</h4>
+                <h4 class="white--text">Guardar</h4>
               </v-btn>
             </div>
           </v-form>
         </v-container>
       </v-card>
     </v-dialog>
+
   </v-container>
 </template>
 
@@ -328,6 +337,11 @@ export default {
       dialogAgregarObservacion: false,
       dialogModificarObservacion: false,
       dialogEliminarObservacion: false,
+
+      show_alerta: false,                        // eug. para el v-alert (mostrar/ocultar)
+      alertColor: 'green',                     // eug. green -> para success, red -> para error
+      alertType: 'success',                   // eug. ejemplo 'success', 'error', ...
+      alert_mensaje: 'Mensaje de la alerta', // eug.
 
       mostrar: false,
       cargando: false,
@@ -496,6 +510,7 @@ export default {
         });
     },
     resetAgregarObservacion() {
+      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500); 
       this.resetAddObservation();
       this.dialogAgregarObservacion = false;
       this.observacion.titulo = '';
@@ -523,6 +538,10 @@ export default {
           idselector: response.id + response.titulo,
         };
         this.observaciones.push(observacion);
+        this.my_custom_alert(true, 'green', 'success', '¡Observación creada exitosamente!', 2500);
+      })
+      .catch((error) => {
+        this.my_custom_alert(true, 'red', 'error', '¡Error al crear la observación!', 2500);
       });
     },
     resetEliminarObservacion() {
@@ -531,6 +550,7 @@ export default {
       this.eliminarObservacion.id = "";
       this.eliminarObservacion.fecha = "";
       this.eliminarObservacion.descripcion = "";
+      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500);
     },
     EliminarObservacion() {
      var usuario = this.getUserValido;
@@ -539,12 +559,12 @@ export default {
       axios
         .delete(url, this.$store.state.config)
         .then((result) => {
-          // this.alertAcept = true;
-          // this.textoAcept = 'Se ha eliminado correctamente la observación.';
           this.resetEliminarObservacion();
           this.obtenerObservaciones(); // crea un metodo para la eliminacion
+          this.my_custom_alert(true, 'green', 'success', '¡Observación eliminada exitosamente!', 2500);
         })
         .catch((error) => {
+          this.my_custom_alert(true, 'red', 'error', '¡Error al eliminar la observación!', 2500);
         });
     },
     cargarDatosEliminarObservacion(observacion) {
@@ -563,7 +583,7 @@ export default {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
       const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
-     const request = {
+      const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
         fecha : this.fechaUpObs
@@ -573,8 +593,10 @@ export default {
         .then((result) => {
           this.resetModificarObservacion();
           this.obtenerObservaciones(); // ver como actualizar la app sin  llamar a la bd
+          this.my_custom_alert(true, 'green', 'success', '¡Observación modificada exitosamente!', 2500);
         })
         .catch((error) => {
+          this.my_custom_alert(true, 'red', 'error', '¡Error al modificar la observación!', 2500);
         });
     },
     cargarDatosModificarObservacion(observacion) {
@@ -586,6 +608,8 @@ export default {
       this.modificarObservacion.descripcion = observacion.descripcion;
     },
     resetModificarObservacion() {
+      //this.$router.go(); //sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500);
       this.resetUpdateObservation();
       this.dialogModificarObservacion = false;
       this.modificarObservacion.id = '';
@@ -593,6 +617,13 @@ export default {
       this.modificarObservacion.fecha = '';
       this.modificarObservacion.descripcion = '';
       this.fechaAddObs= new Date().toISOString().substr(0, 10);
+    },
+    my_custom_alert(show_alerta, alertColor, alertType, alert_mensaje, alert_timeout) {
+      this.show_alerta   = show_alerta  ;    // true | false
+      this.alertColor    = alertColor   ;   // 'green', 'red', etc...
+      this.alertType     = alertType    ;  // 'success', 'error', 'info', etc...
+      this.alert_mensaje = alert_mensaje; // 'Se realizó la acción correctamente', etc...
+      setTimeout(() => {this.show_alerta = false}, alert_timeout);
     },
   },
 };
