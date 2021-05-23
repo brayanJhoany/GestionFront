@@ -32,7 +32,7 @@
                             bottom
                             left
                             color="accent"
-                            @click="dialogAgregarObservacion = true"
+                            @click="dialogAgregarObservacion = true; form_añadirObservacionValido = false;"
                           >
                             <v-icon color="white">fas fa-plus</v-icon>
                           </v-btn>
@@ -129,6 +129,7 @@
       <v-col cols="12" md="2"> </v-col>  
     </v-row>
 
+    <!-- modal boton plus agregar observación -->
     <v-dialog v-model="dialogAgregarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
@@ -143,10 +144,10 @@
           >
             <v-text-field
               v-model="observacion.titulo"
-              label="Titulo"
+              label="Título"
               
               color="secondary"
-              :rules="[(v) => !!v || 'El título es requerido']"
+              :rules="[(v) => !!v || 'El título es requerido', (v) => /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) || 'El título solo puede contener letras, espacios o números.']"
             ></v-text-field>
                <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
                   transition="scale-transition"
@@ -175,7 +176,7 @@
               
               color="secondary"
               label="Descripción"
-              :rules="[(v) => !!v || 'La descripción es requerida.']"
+              :rules="[(v) => !!v || 'La descripción es requerida.', (v) => /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) || 'La descripción contiene caracteres no permitidos.']"
             ></v-textarea>
             <div class="pb-1" style="text-align: right">
               <v-btn
@@ -210,7 +211,7 @@
     >
       <v-card class="mx-auto" max-width="500px">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text">Eliminar Observacion</h5>
+          <h5 class="white--text">Eliminar Observación</h5>
         </v-card-title>
 
         <v-card-title
@@ -247,22 +248,23 @@
     <v-dialog v-model="dialogModificarObservacion" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
-          <h5 class="white--text">Modificar observacion</h5>
+          <h5 class="white--text">Modificar observación</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
            <v-form
             ref="form_actualizarObservacion"
             style="margin:0;padding:0;"
+            v-model="form_actualizarObservacionValido"
             lazy-validation
           >
             <v-text-field
               v-model="modificarObservacion.titulo"
-              label="Titulo"
+              label="Título"
               color="secondary"
              
-              :rules="[(v) => !!v || 'El título es requerido']"
+              :rules="[(v) => !!v || 'El título es requerido', (v) => /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) || 'El título solo puede contener letras, espacios o números.']"
             ></v-text-field>
-           <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
+            <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
               transition="scale-transition"
               offset-y
               min-width="290px"> 
@@ -290,7 +292,7 @@
               
               color="secondary"
               label="Descripción"
-              :rules="[(v) => !!v || 'La descripción es requerida.']"
+              :rules="[(v) => !!v || 'La descripción es requerida.', (v) => /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) || 'La descripción contiene caracteres no permitidos.']"
             ></v-textarea>
             <div class="pb-1" style="text-align:right;">
               <v-btn
@@ -302,7 +304,7 @@
                 <h4 class="white--text">Cancelar</h4>
               </v-btn>
               <v-btn
-                :disabled="!form_añadirObservacionValido"
+                :disabled="!form_actualizarObservacionValido"
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
                 color="secondary"
@@ -323,6 +325,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+
+
 import axios from "axios";
 import Volver from "@/components/Globales/Volver.vue";
 
@@ -348,7 +352,7 @@ export default {
       observaciones: [],
       auxObservaciones: [],
       //fechas
-       rules: [
+      rules: [
         value => !!value || 'Requerido',
         value => value <= new Date().getFullYear()|| 'El año no puede ser mayor al actual',
         value => value >= 1981 || 'El año no puede ser menor a 1981',
@@ -376,12 +380,10 @@ export default {
         descripcion: "",
       },
 
-      dialogAEditarEstudiante: false,
 
-
-      form_EditarEstudianteValido: true,
       form_añadirObservacionValido: true,
-      form_solicitarEstudianteValido: true,
+      form_actualizarObservacionValido: true,
+
 
       reglas_Nombre: [
         (value) => !!value || "Requerido",
@@ -423,10 +425,10 @@ export default {
 
   methods: {
     resetAddObservation () {
-        this.$refs.form_añadirObservacion.resetValidation();
+      this.$refs.form_añadirObservacion.resetValidation();
     },
     resetUpdateObservation () {
-        this.$refs.form_actualizarObservacion.resetValidation();
+      this.$refs.form_actualizarObservacion.resetValidation();
     },
      save (date) {
         this.$refs.menu.save(date)
