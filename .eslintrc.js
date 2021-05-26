@@ -3,16 +3,11 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'plugin:vue/essential',
-    'airbnb-base',
-  ],
+  extends: ['plugin:vue/essential', 'airbnb-base'],
   parserOptions: {
     ecmaVersion: 12,
   },
-  plugins: [
-    'vue',
-  ],
+  plugins: ['vue'],
   rules: {
     'no-console': 'off',
     'no-debugger': 'off',
@@ -21,13 +16,15 @@ module.exports = {
     indent: 'off',
     //
     'no-unused-vars': 'warn',
+    settings: {
+      'import/resolver': {
+        typescript: {},
+      },
     },
+  },
   overrides: [
     {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true,
       },

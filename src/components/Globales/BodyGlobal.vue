@@ -75,29 +75,6 @@ export default {
     };
   },
   props: { curso: Array },
-
-  // beforeRouteEnter(to, from, next) {
-  //   // aun no puedo usar al this
-  //   console.log('beforeRouteEnter');
-  //   // console.log("destoy actualizando la ruta");
-  //   // this.curso.id = this.$route.params.id;
-  //   // this.curso.nombre = this.$route.params.nombre.replace("-", " ");
-  //   // this.curso.seccion = this.$route.params.seccion;
-  //   // console.log(this.curso.nombre);
-  //   return next((vm) => {
-  //     console.log(from);
-  //     console.log(to);
-  //   });
-  // },
-  // beforeRouteUpdate(to, from) {
-  //   console.log('beforeRouteUpdate');
-  // },
-  // beforeRouteLeave(to, from) {
-  //   console.log('beforeRouteLeave');
-  // },
-  // created() {
-  //   this.remplazarNombreCurso();
-  // },
   methods: {
     redireccion(accion) {
       if (accion === "Bitacora") {

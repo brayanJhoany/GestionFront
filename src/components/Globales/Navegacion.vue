@@ -56,12 +56,18 @@
             class="difuminado"
             active-class="activacion"
           >
-            <!--<v-list-item-icon>
-              <v-icon color="white">fas fa-users</v-icon>
-            </v-list-item-icon>-->
             <v-list-item-title class="white--text truncate letra">
-              <strong>{{ curso.nombre }}</strong></v-list-item-title
-            >
+              <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <span
+                  v-bind="attrs"
+                  v-on="on"
+                ><strong>{{ curso.nombre }} - {{curso.seccion}}</strong></span>
+              </template>
+              <span>{{ curso.nombre }} - {{curso.seccion}}</span>
+            </v-tooltip>
+              <!-- <strong>{{ curso.nombre }}</strong> -->
+            </v-list-item-title >
           </v-list-item>
         </template>
         <span
@@ -69,24 +75,6 @@
         >
       </v-tooltip>
     </v-list>
-
-    <!-- <template v-slot:append>
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown ? false : true"
-        class=" difuminado align-self-end"
-        style="background-color: #FF6B6B"
-        @click="unLogin"
-      >
-        <v-list-item-icon>
-          <v-icon color="white" style="font-size: 125%"
-            >fas fa-power-off</v-icon
-          >
-        </v-list-item-icon>
-        <v-list-item-title class="white--text letra"
-          ><strong>Cerrar sesion</strong></v-list-item-title
-        >
-      </v-list-item>
-    </template> -->
   </v-navigation-drawer>
 </template>
 
@@ -110,15 +98,15 @@ export default {
   icons: {
     iconfont: ["mdiSvg", "mdi", "mdiSvg", "md", "fa", "fa4", "faSvg"],
   },
-  beforeMount() {
+  created() {
     this.obtenerCursos();
   },
   methods: {
     obtenerCursos() {
+      var usuario = this.$store.getters.usuario;
       this.cursosAux = [];
-      const url = `${this.$store.state.rutaDinamica}profesor/1/cursos`;
-      axios
-        .get(url)
+      const url = this.$store.state.rutaDinamica +"profesor/"+usuario.id+"/cursos";
+      axios.get(url)
         .then((result) => {
           const response = result.data;
           if (result.data.error === false) {
@@ -132,33 +120,9 @@ export default {
               this.cursosAux[index] = curso;
             }
             this.cursos = this.cursosAux;
-            console.log("holas");
           }
         })
         .catch((error) => {
-          console.log(error);
-          // if (error.message == 'Network Error') {
-          //   this.alertError = true;
-          //   this.cargando = false;
-          //   this.textoError = 'Error al cargar los datos, inténtelo más tarde'
-          // } else {
-          //   if (error.response.data.success == false) {
-          //     switch (error.response.data.code) {
-          //       case 101:
-          //           //console.log(error.response.data.code +' '+ error.response.data.message);
-          //           //console.log(error.response.data);
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //       default:
-          //           this.alertError = true;
-          //           this.cargando = false;
-          //           this.textoError = error.response.data.message;
-          //           break;
-          //     }
-          //   }
-          // }
         });
     },
   },
