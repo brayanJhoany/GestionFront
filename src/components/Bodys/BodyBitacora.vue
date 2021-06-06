@@ -1,132 +1,131 @@
 <template>
   <v-container fluid>
     <Volver />
-    <!-- <v-btn block @click="volver">
-      <v-icon class="pr-2" color="primary"> fas fa-arrow-circle-left</v-icon>
-      volver
-    </v-btn> -->
     <v-row>
       <v-col cols="12" md="2"> </v-col>
 
       <v-col cols="12" md="8">
+        <v-card class="mt-13" color="info">
+          <v-row>
+            <v-col cols="12">
+              <v-card-title class="headline text--center" primary-title>
+                <div>
+                  <strong class="blue--text letra" ref="bitacora_strong"
+                    >Bitácora</strong
+                  >
+                </div>
+                <v-spacer></v-spacer>
+                <div style="text-align: right">
+                  <v-tooltip bottom color="primary">
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        :small="$vuetify.breakpoint.lgAndDown ? true : false"
+                        v-on="on"
+                        fab
+                        bottom
+                        left
+                        color="accent"
+                        @click="
+                          dialogAgregarObservacion = true;
+                          form_añadirObservacionValido = false;
+                        "
+                      >
+                        <v-icon color="white">fas fa-plus</v-icon>
+                      </v-btn>
+                    </template>
+                    <span><strong>Añadir observación</strong></span>
+                  </v-tooltip>
+                </div>
+              </v-card-title>
+            </v-col>
+          </v-row>
+        </v-card>
+
         <v-row>
-          <v-col cols="12" sm="0" md="1"> </v-col>
-          <v-col cols="12" sm="12" md="10">
-            <v-card class="mt-13" color="info">
-              <v-row>
-                <v-col cols="12">
-                  <v-card-title class="headline text--center" primary-title>
-                    <div>
-                      <strong class="blue--text letra" ref="bitacora_strong">Bitácora</strong>
-                    </div>
-                    <v-spacer></v-spacer>
-                    <div style="text-align: right">
-                      <v-tooltip bottom color="primary">
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            :small="
-                              $vuetify.breakpoint.lgAndDown ? true : false
-                            "
-                            v-on="on"
-                            fab
-                            bottom
-                            left
-                            color="accent"
-                            @click="dialogAgregarObservacion = true; form_añadirObservacionValido = false;"
-                          >
-                            <v-icon color="white">fas fa-plus</v-icon>
-                          </v-btn>
-                        </template>
-                        <span><strong>Añadir observación</strong></span>
-                      </v-tooltip>
-                    </div>
-                  </v-card-title>
-                </v-col>
-              </v-row>
-            </v-card>
-
-            <v-row>
-              <v-col>
-                <v-alert v-model="show_alerta" transition="scale-transition" v-bind:color="alertColor" v-bind:type="alertType" style="width: 100%; margin-top: 20px;">{{alert_mensaje}}</v-alert> <!-- eug. -->
-              </v-col>
-            </v-row>
-
-            <h3 class="white--text">/</h3>
-            <v-timeline align-top dense>
-              <v-timeline-item
-                v-for="(observacion, i) in observaciones"
-                :key="i"
-                :ref="'obs-'+i"
-                color="success"
-                large
-              >
-                <v-card color="success">
-                  <v-card-title class="headline text--center" primary-title>
-                    <div class="v-markdown">
-                      <h5 class="white--text difuminado">
-                        {{ observacion.titulo }}
-                      </h5>
-                    </div>
-                  </v-card-title>
-                  <v-container style="background-color: white">
-                    <v-row style="margin: 0; padding: 0">
-                      <v-col cols="12" style="margin: 0; padding: 0">
-                        <h5>Fecha : {{ observacion.fecha }}</h5>
-                      </v-col>
-                    </v-row>
-                    <h5 class="mt-4 mb-1">Descripción</h5>
-                    <div
-                      class="DIV mb-2"
-                      style="height: 150px; overflow: auto; font-size: 90%"
-                    >
-                      {{ observacion.descripcion }}
-                    </div>
-
-                    <div style="text-align: right">
-                      <v-tooltip bottom color="primary">
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            v-on="on"
-                            color="white"
-                            fab
-                            small
-                            depressed
-                            class="mr-2 py-2"
-                            @click="
-                              cargarDatosModificarObservacion(observacion)
-                            "
-                          >
-                            <v-icon color="primary"> fas fa-edit </v-icon>
-                          </v-btn>
-                        </template>
-                        <span><strong>Editar</strong></span>
-                      </v-tooltip>
-                      <v-tooltip bottom color="primary">
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            v-on="on"
-                            color="white"
-                            fab
-                            small
-                            depressed
-                            class="mr-2 py-2"
-                            @click="cargarDatosEliminarObservacion(observacion)"
-                          >
-                            <v-icon color="warning"> fas fa-trash-alt </v-icon>
-                          </v-btn>
-                        </template>
-                        <span><strong>Eliminar</strong></span>
-                      </v-tooltip>
-                    </div>
-                  </v-container>
-                </v-card>
-              </v-timeline-item>
-            </v-timeline>
+          <v-col>
+            <v-alert
+              v-model="show_alerta"
+              transition="scale-transition"
+              v-bind:color="alertColor"
+              v-bind:type="alertType"
+              style="width: 100%; margin-top: 20px"
+              >{{ alert_mensaje }}</v-alert
+            >
+            <!-- eug. -->
           </v-col>
-          <v-col cols="0" sm="0" md="1"> </v-col>
         </v-row>
+
+        <h3 class="white--text">/</h3>
+        <v-timeline align-top dense>
+          <v-timeline-item
+            v-for="(observacion, i) in observaciones"
+            :key="i"
+            :ref="'obs-' + i"
+            color="success"
+            large
+          >
+            <v-card color="success">
+              <v-card-title class="headline text--center" primary-title>
+                <div class="v-markdown">
+                  <h5 class="white--text difuminado">
+                    {{ observacion.titulo }}
+                  </h5>
+                </div>
+              </v-card-title>
+              <v-container style="background-color: white">
+                <v-row style="margin: 0; padding: 0">
+                  <v-col cols="12" style="margin: 0; padding: 0">
+                    <h5>Fecha : {{ observacion.fecha }}</h5>
+                  </v-col>
+                </v-row>
+                <h5 class="mt-4 mb-1">Descripción</h5>
+                <div
+                  class="DIV mb-2"
+                  style="height: 100px; overflow: auto; font-size: 90%"
+                >
+                  {{ observacion.descripcion }}
+                </div>
+
+                <div style="text-align: right">
+                  <v-tooltip bottom color="primary">
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        color="white"
+                        fab
+                        small
+                        depressed
+                        class="mr-2 py-2"
+                        @click="cargarDatosModificarObservacion(observacion)"
+                      >
+                        <v-icon color="primary"> fas fa-edit </v-icon>
+                      </v-btn>
+                    </template>
+                    <span><strong>Editar</strong></span>
+                  </v-tooltip>
+                  <v-tooltip bottom color="primary">
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        color="white"
+                        fab
+                        small
+                        depressed
+                        class="mr-2 py-2"
+                        @click="cargarDatosEliminarObservacion(observacion)"
+                      >
+                        <v-icon color="warning"> fas fa-trash-alt </v-icon>
+                      </v-btn>
+                    </template>
+                    <span><strong>Eliminar</strong></span>
+                  </v-tooltip>
+                </div>
+              </v-container>
+            </v-card>
+          </v-timeline-item>
+        </v-timeline>
       </v-col>
-      <v-col cols="12" md="2"> </v-col>  
+      <v-col cols="12" md="2"> </v-col>
     </v-row>
 
     <!-- modal boton plus agregar observación -->
@@ -145,38 +144,46 @@
             <v-text-field
               v-model="observacion.titulo"
               label="Título"
-              
               color="secondary"
-              :rules="[(v) => !!v || 'El título es requerido', (v) => /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) || 'El título solo puede contener letras, espacios o números.']"
+              :rules="[
+                (v) => !!v || 'El título es requerido',
+                (v) =>
+                  /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) ||
+                  'El título solo puede contener letras, espacios o números.',
+              ]"
             ></v-text-field>
-               <v-menu ref="menu" v-model="menu" :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"> 
-                  <template v-slot:activator="{ on }">
-                      <v-text-field v-model="fechaAddObs" 
-                      readonly  v-on="on" >
-                      </v-text-field>
-                  </template>
-                  <v-date-picker
-                  ref="picker"
-                  
-                  v-model="fechaAddObs"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-                  @change="save"
-                  @input="menu = false"
-                  
-                  ></v-date-picker>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field v-model="fechaAddObs" readonly v-on="on">
+                </v-text-field>
+              </template>
+              <v-date-picker
+                ref="picker"
+                v-model="fechaAddObs"
+                :max="new Date().toISOString().substr(0, 10)"
+                min="1950-01-01"
+                @change="save"
+                @input="menu = false"
+              ></v-date-picker>
+            </v-menu>
 
-              </v-menu>
-            
             <v-textarea
               v-model="observacion.descripcion"
-              
               color="secondary"
               label="Descripción"
-              :rules="[(v) => !!v || 'La descripción es requerida.', (v) => /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) || 'La descripción contiene caracteres no permitidos.']"
+              :rules="[
+                (v) => !!v || 'La descripción es requerida.',
+                (v) =>
+                  /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) ||
+                  'La descripción contiene caracteres no permitidos.',
+              ]"
             ></v-textarea>
             <div class="pb-1" style="text-align: right">
               <v-btn
@@ -221,9 +228,9 @@
               ? 'font-size: 90%;'
               : 'font-size: 100%;'
           "
-          >Esta seguro que desea eliminar la 
-          observación</v-card-title>
-        <div class="px-5 mt-5  pb-4" style="text-align:right;">
+          >Esta seguro que desea eliminar la observación</v-card-title
+        >
+        <div class="px-5 mt-5 pb-4" style="text-align: right">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown ? true : false"
             rounded
@@ -251,9 +258,9 @@
           <h5 class="white--text">Modificar observación</h5>
         </v-card-title>
         <v-container class="px-5 mt-5">
-           <v-form
+          <v-form
             ref="form_actualizarObservacion"
-            style="margin:0;padding:0;"
+            style="margin: 0; padding: 0"
             v-model="form_actualizarObservacionValido"
             lazy-validation
           >
@@ -261,40 +268,47 @@
               v-model="modificarObservacion.titulo"
               label="Título"
               color="secondary"
-             
-              :rules="[(v) => !!v || 'El título es requerido', (v) => /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) || 'El título solo puede contener letras, espacios o números.']"
+              :rules="[
+                (v) => !!v || 'El título es requerido',
+                (v) =>
+                  /^[a-zA-Z0-9\u00f1\u00d1 ]+$/.test(v) ||
+                  'El título solo puede contener letras, espacios o números.',
+              ]"
             ></v-text-field>
-            <v-menu ref="menu2" v-model="menu2" :close-on-content-click="false"
+            <v-menu
+              ref="menu2"
+              v-model="menu2"
+              :close-on-content-click="false"
               transition="scale-transition"
               offset-y
-              min-width="290px"> 
-                  <template v-slot:activator="{ on }">
-                      <v-text-field v-model="fechaUpObs" 
-                      readonly  v-on="on" >
-                      </v-text-field>
-                  </template>
-                  <v-date-picker
-                  ref="picker"
-                  
-                  v-model="fechaUpObs"
-                  :max="new Date().toISOString().substr(0, 10)"
-                  min="1950-01-01"
-                  @change="save"
-                  @input="menu2 = false"
-                  
-                  ></v-date-picker>
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field v-model="fechaUpObs" readonly v-on="on">
+                </v-text-field>
+              </template>
+              <v-date-picker
+                ref="picker"
+                v-model="fechaUpObs"
+                :max="new Date().toISOString().substr(0, 10)"
+                min="1950-01-01"
+                @change="save"
+                @input="menu2 = false"
+              ></v-date-picker>
+            </v-menu>
 
-              </v-menu>
-
-            
             <v-textarea
               v-model="modificarObservacion.descripcion"
-              
               color="secondary"
               label="Descripción"
-              :rules="[(v) => !!v || 'La descripción es requerida.', (v) => /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) || 'La descripción contiene caracteres no permitidos.']"
+              :rules="[
+                (v) => !!v || 'La descripción es requerida.',
+                (v) =>
+                  /^[a-zA-Z0-9,-.¿?:;/¡!\u00f1\u00d1 ]+$/.test(v) ||
+                  'La descripción contiene caracteres no permitidos.',
+              ]"
             ></v-textarea>
-            <div class="pb-1" style="text-align:right;">
+            <div class="pb-1" style="text-align: right">
               <v-btn
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
@@ -319,13 +333,11 @@
         </v-container>
       </v-card>
     </v-dialog>
-
   </v-container>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
-
 
 import axios from "axios";
 import Volver from "@/components/Globales/Volver.vue";
@@ -340,10 +352,10 @@ export default {
       dialogModificarObservacion: false,
       dialogEliminarObservacion: false,
 
-      show_alerta: false,                        // eug. para el v-alert (mostrar/ocultar)
-      alertColor: 'green',                     // eug. green -> para success, red -> para error
-      alertType: 'success',                   // eug. ejemplo 'success', 'error', ...
-      alert_mensaje: 'Mensaje de la alerta', // eug.
+      show_alerta: false, // eug. para el v-alert (mostrar/ocultar)
+      alertColor: "green", // eug. green -> para success, red -> para error
+      alertType: "success", // eug. ejemplo 'success', 'error', ...
+      alert_mensaje: "Mensaje de la alerta", // eug.
 
       mostrar: false,
       cargando: false,
@@ -353,20 +365,22 @@ export default {
       auxObservaciones: [],
       //fechas
       rules: [
-        value => !!value || 'Requerido',
-        value => value <= new Date().getFullYear()|| 'El año no puede ser mayor al actual',
-        value => value >= 1981 || 'El año no puede ser menor a 1981',
-        ],
-        // unAnhoVariable: true,
-        // rangoAnhosVariable: true,
-        activePicker: null,
-        date: null,
-        fechaAddObs: new Date().toISOString().substr(0, 10),
-        fechaUpObs: new Date().toISOString().substr(0, 10),
-        menu: false,
-        menu2:false,
-        landscape: false,
-      // datos para 
+        (value) => !!value || "Requerido",
+        (value) =>
+          value <= new Date().getFullYear() ||
+          "El año no puede ser mayor al actual",
+        (value) => value >= 1981 || "El año no puede ser menor a 1981",
+      ],
+      // unAnhoVariable: true,
+      // rangoAnhosVariable: true,
+      activePicker: null,
+      date: null,
+      fechaAddObs: new Date().toISOString().substr(0, 10),
+      fechaUpObs: new Date().toISOString().substr(0, 10),
+      menu: false,
+      menu2: false,
+      landscape: false,
+      // datos para
       observacion: {
         titulo: "",
         descripcion: "",
@@ -380,10 +394,8 @@ export default {
         descripcion: "",
       },
 
-
       form_añadirObservacionValido: true,
       form_actualizarObservacionValido: true,
-
 
       reglas_Nombre: [
         (value) => !!value || "Requerido",
@@ -409,30 +421,30 @@ export default {
         easing: "linear",
       };
     },
-    getUserValido(){
-            return this.$store.getters.usuario;
-        }
+    getUserValido() {
+      return this.$store.getters.usuario;
+    },
   },
   watch: {
-         menu (val) {
-        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-      },
+    menu(val) {
+      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
+  },
 
   beforeMount() {
     this.obtenerObservaciones();
   },
 
   methods: {
-    resetAddObservation () {
+    resetAddObservation() {
       this.$refs.form_añadirObservacion.resetValidation();
     },
-    resetUpdateObservation () {
+    resetUpdateObservation() {
       this.$refs.form_actualizarObservacion.resetValidation();
     },
-     save (date) {
-        this.$refs.menu.save(date)
-      },
+    save(date) {
+      this.$refs.menu.save(date);
+    },
     volver() {
       const auxruta = this.enrutamiento.split("");
 
@@ -459,7 +471,13 @@ export default {
     obtenerObservaciones() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observaciones";
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/bitacora/1/observaciones";
       this.cargando = true;
       this.seriesaux = [0, 0, 0, 0];
 
@@ -510,39 +528,65 @@ export default {
         });
     },
     resetAgregarObservacion() {
-      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500); 
+      this.my_custom_alert(
+        true,
+        "blue",
+        "info",
+        "¡La acción fue anulada!",
+        1500
+      );
       this.resetAddObservation();
       this.dialogAgregarObservacion = false;
-      this.observacion.titulo = '';
-      this.observacion.descripcion = '';
+      this.observacion.titulo = "";
+      this.observacion.descripcion = "";
       this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
     agregarObservacion() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion";
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/bitacora/1/observacion";
       const request = {
         titulo: this.observacion.titulo,
         descripcion: this.observacion.descripcion,
-        fecha: this.fechaAddObs
+        fecha: this.fechaAddObs,
       };
-      axios.post(url, request, this.$store.state.config).then((result) => {
-        this.resetAgregarObservacion();
-        const response = result.data;
-        const observacion = {
-          id: response.id,
-          titulo: response.titulo,
-          descripcion: response.descripcion,
-          fecha: response.fechaCreacion,
-          selector: `#${response.id}${response.titulo}`,
-          idselector: response.id + response.titulo,
-        };
-        this.observaciones.push(observacion);
-        this.my_custom_alert(true, 'green', 'success', '¡Observación creada exitosamente!', 2500);
-      })
-      .catch((error) => {
-        this.my_custom_alert(true, 'red', 'error', '¡Error al crear la observación!', 2500);
-      });
+      axios
+        .post(url, request, this.$store.state.config)
+        .then((result) => {
+          this.resetAgregarObservacion();
+          const response = result.data;
+          const observacion = {
+            id: response.id,
+            titulo: response.titulo,
+            descripcion: response.descripcion,
+            fecha: response.fechaCreacion,
+            selector: `#${response.id}${response.titulo}`,
+            idselector: response.id + response.titulo,
+          };
+          this.observaciones.push(observacion);
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Observación creada exitosamente!",
+            2500
+          );
+        })
+        .catch((error) => {
+          this.my_custom_alert(
+            true,
+            "red",
+            "error",
+            "¡Error al crear la observación!",
+            2500
+          );
+        });
     },
     resetEliminarObservacion() {
       this.dialogEliminarObservacion = false;
@@ -550,21 +594,46 @@ export default {
       this.eliminarObservacion.id = "";
       this.eliminarObservacion.fecha = "";
       this.eliminarObservacion.descripcion = "";
-      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500);
+      this.my_custom_alert(
+        true,
+        "blue",
+        "info",
+        "¡La acción fue anulada!",
+        1500
+      );
     },
     EliminarObservacion() {
-     var usuario = this.getUserValido;
+      var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.eliminarObservacion.id;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/bitacora/1/observacion/" +
+        this.eliminarObservacion.id;
       axios
         .delete(url, this.$store.state.config)
         .then((result) => {
           this.resetEliminarObservacion();
           this.obtenerObservaciones(); // crea un metodo para la eliminacion
-          this.my_custom_alert(true, 'green', 'success', '¡Observación eliminada exitosamente!', 2500);
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Observación eliminada exitosamente!",
+            2500
+          );
         })
         .catch((error) => {
-          this.my_custom_alert(true, 'red', 'error', '¡Error al eliminar la observación!', 2500);
+          this.my_custom_alert(
+            true,
+            "red",
+            "error",
+            "¡Error al eliminar la observación!",
+            2500
+          );
         });
     },
     cargarDatosEliminarObservacion(observacion) {
@@ -582,21 +651,40 @@ export default {
     updateObservacion() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url = this.$store.state.rutaDinamica +"profesor/"+ usuario.id+"/curso/" +cursoId+"/bitacora/1/observacion/"+this.modificarObservacion.id;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/bitacora/1/observacion/" +
+        this.modificarObservacion.id;
       const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
-        fecha : this.fechaUpObs
+        fecha: this.fechaUpObs,
       };
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {
           this.resetModificarObservacion();
           this.obtenerObservaciones(); // ver como actualizar la app sin  llamar a la bd
-          this.my_custom_alert(true, 'green', 'success', '¡Observación modificada exitosamente!', 2500);
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Observación modificada exitosamente!",
+            2500
+          );
         })
         .catch((error) => {
-          this.my_custom_alert(true, 'red', 'error', '¡Error al modificar la observación!', 2500);
+          this.my_custom_alert(
+            true,
+            "red",
+            "error",
+            "¡Error al modificar la observación!",
+            2500
+          );
         });
     },
     cargarDatosModificarObservacion(observacion) {
@@ -609,21 +697,35 @@ export default {
     },
     resetModificarObservacion() {
       //this.$router.go(); //sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-      this.my_custom_alert(true, 'blue', 'info', '¡La acción fue anulada!', 1500);
+      this.my_custom_alert(
+        true,
+        "blue",
+        "info",
+        "¡La acción fue anulada!",
+        1500
+      );
       this.resetUpdateObservation();
       this.dialogModificarObservacion = false;
-      this.modificarObservacion.id = '';
-      this.modificarObservacion.titulo = '';
-      this.modificarObservacion.fecha = '';
-      this.modificarObservacion.descripcion = '';
-      this.fechaAddObs= new Date().toISOString().substr(0, 10);
+      this.modificarObservacion.id = "";
+      this.modificarObservacion.titulo = "";
+      this.modificarObservacion.fecha = "";
+      this.modificarObservacion.descripcion = "";
+      this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
-    my_custom_alert(show_alerta, alertColor, alertType, alert_mensaje, alert_timeout) {
-      this.show_alerta   = show_alerta  ;    // true | false
-      this.alertColor    = alertColor   ;   // 'green', 'red', etc...
-      this.alertType     = alertType    ;  // 'success', 'error', 'info', etc...
+    my_custom_alert(
+      show_alerta,
+      alertColor,
+      alertType,
+      alert_mensaje,
+      alert_timeout
+    ) {
+      this.show_alerta = show_alerta; // true | false
+      this.alertColor = alertColor; // 'green', 'red', etc...
+      this.alertType = alertType; // 'success', 'error', 'info', etc...
       this.alert_mensaje = alert_mensaje; // 'Se realizó la acción correctamente', etc...
-      setTimeout(() => {this.show_alerta = false}, alert_timeout);
+      setTimeout(() => {
+        this.show_alerta = false;
+      }, alert_timeout);
     },
   },
 };
