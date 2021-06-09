@@ -43,14 +43,14 @@
                 solo
               ></v-select>
             </v-col>
-
+            
             <v-col>
               <v-menu
-                ref="menu"
-                v-model="menu2"
+                ref="menu4"
+                v-model="menu4"
                 :close-on-content-click="false"
                 :nudge-right="40"
-                :return-value.sync="time"
+                :return-value.sync="time4"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
@@ -58,7 +58,7 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="time"
+                    v-model="time4"
                     label="Hora Inicio"
                     prepend-icon="mdi-clock-time-four-outline"
                     readonly
@@ -68,10 +68,10 @@
                   ></v-text-field>
                 </template>
                 <v-time-picker
-                  v-if="menu2"
-                  v-model="time"
+                  v-if="menu4"
+                  v-model="time4"
                   full-width
-                  @click:minute="$refs.menu.save(time)"
+                  @click:minute="$refs.menu4.save(time4)"
                 ></v-time-picker>
               </v-menu>
 
@@ -740,6 +740,8 @@ export default {
       fechaUpObs: new Date().toISOString().substr(0, 10),
       menu: false,
       menu2: false,
+      menu4: false,
+      time4: null,
       landscape: false,
 
       semanas: [
