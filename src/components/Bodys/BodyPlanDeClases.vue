@@ -207,10 +207,10 @@
           <v-divider></v-divider>
 
           <v-row class="mt-6">
-            <v-col>
+            <v-col justify="center" align="center">
               <strong>Horario Consulta</strong>
             </v-col>
-            <v-col>
+            <v-col justify="center" align="center">
               <strong>Horario Clases</strong>
             </v-col>
           </v-row>
