@@ -34,10 +34,16 @@
         <section id="claseYconsultas">
           <v-row align="center" justify="center" class="mt-5">
             <v-col cols="6" md="2">
-              <v-text-field v-model="plan.horarioClases" label="Horario de clases"></v-text-field>
+              <v-text-field
+                v-model="plan.horarioClases"
+                label="Horario de clases"
+              ></v-text-field>
             </v-col>
             <v-col cols="6" md="2">
-              <v-text-field v-model="plan.horarioConsultas" label="Horario de consultas"></v-text-field>
+              <v-text-field
+                v-model="plan.horarioConsultas"
+                label="Horario de consultas"
+              ></v-text-field>
             </v-col>
             <v-col cols="6" md="2">
               <v-btn color="primary" elevation="2">Guardar</v-btn>
@@ -210,7 +216,12 @@
             v-model="form_añadirActividadValido"
             lazy-validation
           >
-            <v-select v-model="semana_selec" ref="semana" :items="semanas" label="Semana"></v-select>
+            <v-select
+              v-model="semana_selec"
+              ref="semana"
+              :items="semanas"
+              label="Semana"
+            ></v-select>
             <v-menu
               ref="menu"
               v-model="menu"
@@ -290,7 +301,6 @@
         </v-container>
       </v-card>
     </v-dialog>
-
     <v-dialog v-model="dialogEditarActividad" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
@@ -303,7 +313,12 @@
             v-model="form_editarActividadValido"
             lazy-validation
           >
-            <v-select v-model="detalleEditar.semana" ref="semana" :items="semanas" label="Semana"></v-select>
+            <v-select
+              v-model="detalleEditar.semana"
+              ref="semana"
+              :items="semanas"
+              label="Semana"
+            ></v-select>
             <v-menu
               ref="menu"
               v-model="menu"
@@ -464,32 +479,31 @@ export default {
       auxDetallesPlan: [],
 
       //almacena los datos del plan de clases con el que estamos trabajando
-      plan:{
+      plan: {
         id: "",
         horarioClases: "",
-        horarioConsultas : "",
+        horarioConsultas: "",
       },
 
       //almacena los datos de la nueva actividad que vamos a agregar al plan de clases
-      detalle:{
+      detalle: {
         semana: "",
         fecha: "",
         actividad: "",
         saber_tema: "",
-        observacion: ""
+        observacion: "",
       },
 
       idEliminarActividad: "",
 
-      detalleEditar:{
+      detalleEditar: {
         id: "",
         semana: "",
         fecha: "",
         actividad: "",
         saber_tema: "",
-        observacion: ""
+        observacion: "",
       },
-
     };
   },
 
@@ -504,12 +518,12 @@ export default {
         easing: "linear",
       };
     },
-    getUserValido(){
-            return this.$store.getters.usuario;
-        }
+    getUserValido() {
+      return this.$store.getters.usuario;
+    },
   },
 
-  beforeMount(){
+  beforeMount() {
     this.obtenerPlanClases();
   },
   save(date) {
@@ -517,10 +531,16 @@ export default {
   },
 
   methods: {
-    obtenerPlanClases(){
+    obtenerPlanClases() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url_plan = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clases";
+      const url_plan =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases";
       this.cargando = true;
 
       this.detallesPlan = [];
@@ -528,89 +548,101 @@ export default {
       this.plan = {
         id: "",
         horarioClases: "",
-        horarioConsultas: ""
-      }
+        horarioConsultas: "",
+      };
 
       //La primera consulta es para obtener los datos del plan de clases.
       axios
         .get(url_plan)
-        .then((result)=>{
-            const response = result.data;
-            console.log(response);
-            if(response.error === false){
-              const auxPlan = {
-                id: response.PlanDeClase[0].id,
-                horarioClases: response.PlanDeClase[0].horarioDeClases,
-                horarioConsultas: response.PlanDeClase[0].horarioDeConsultas
-              }
+        .then((result) => {
+          const response = result.data;
+          console.log(response);
+          if (response.error === false) {
+            const auxPlan = {
+              id: response.PlanDeClase[0].id,
+              horarioClases: response.PlanDeClase[0].horarioDeClases,
+              horarioConsultas: response.PlanDeClase[0].horarioDeConsultas,
+            };
 
-              this.plan.id = auxPlan.id;
-              this.plan.horarioClases = auxPlan.horarioClases;
-              this.plan.horarioConsultas = auxPlan.horarioConsultas;
-              
-              //en la api de rutas esta como "plan-de-clase" en vez de "plan-de-clases".
-              const url_detalle = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clase/"+auxPlan.id+"/detalles";
-      
-              //la segunda consulta es para obtener la lista de actividades dentro del plan de clases.
-              axios
-              .get(url_detalle)
-              .then((result) => {
-                const response = result.data;
-                if(response.error === false){
-                  const lista_detalles = response.DetallePlanDeClase;
-                  
-                  for( let index = 0; index < lista_detalles.length; index += 1){
-                    const auxDetalle = response.DetallePlanDeClase[index];
+            this.plan.id = auxPlan.id;
+            this.plan.horarioClases = auxPlan.horarioClases;
+            this.plan.horarioConsultas = auxPlan.horarioConsultas;
 
-                    const detalle = {
-                      id: auxDetalle.id,
-                      fecha: auxDetalle.fecha,
-                      semana: auxDetalle.semana,
-                      saber_tema: auxDetalle.saber_tema,
-                      actividad: auxDetalle.actividad,
-                      observacion: auxDetalle.observacion,
-                    }
+            //en la api de rutas esta como "plan-de-clase" en vez de "plan-de-clases".
+            const url_detalle =
+              this.$store.state.rutaDinamica +
+              "profesor/" +
+              usuario.id +
+              "/curso/" +
+              cursoId +
+              "/plan-de-clase/" +
+              auxPlan.id +
+              "/detalles";
 
-                    this.auxDetallesPlan[index] = detalle;
-                  }
-                  this.cargando = false;
-                  this.detallesPlan = this.auxDetallesPlan;
+            //la segunda consulta es para obtener la lista de actividades dentro del plan de clases.
+            axios.get(url_detalle).then((result) => {
+              const response = result.data;
+              if (response.error === false) {
+                const lista_detalles = response.DetallePlanDeClase;
+
+                for (let index = 0; index < lista_detalles.length; index += 1) {
+                  const auxDetalle = response.DetallePlanDeClase[index];
+
+                  const detalle = {
+                    id: auxDetalle.id,
+                    fecha: auxDetalle.fecha,
+                    semana: auxDetalle.semana,
+                    saber_tema: auxDetalle.saber_tema,
+                    actividad: auxDetalle.actividad,
+                    observacion: auxDetalle.observacion,
+                  };
+
+                  this.auxDetallesPlan[index] = detalle;
                 }
-              });
-            }
+                this.cargando = false;
+                this.detallesPlan = this.auxDetallesPlan;
+              }
+            });
+          }
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    agregarActividad(){
+    agregarActividad() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
       var idPlan = this.plan.id;
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clases/"+idPlan+"/detalle";
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle";
 
       const request = {
         fecha: this.fechaAddObs,
         semana: this.semana_selec,
         saber_tema: this.detalle.saber_tema,
         actividad: this.detalle.actividad,
-        observacion: this.detalle.observacion
-      }
+        observacion: this.detalle.observacion,
+      };
 
       axios
-      .post(url, request, this.$store.state.config)
-      .then((result) => {
-        this.resetFormularioAgregar();
-        const response = result.data;
-        this.obtenerPlanClases();
-      })
-      .catch((error) => {
-
-      });
+        .post(url, request, this.$store.state.config)
+        .then((result) => {
+          this.resetFormularioAgregar();
+          const response = result.data;
+          this.obtenerPlanClases();
+        })
+        .catch((error) => {});
     },
 
-    resetFormularioAgregar(){
+    resetFormularioAgregar() {
       this.dialogAgregarActividad = false;
       this.$refs.form_añadirActividad.resetValidation();
       this.detalle.actividad = "";
@@ -620,7 +652,7 @@ export default {
       this.semana_selec = "";
     },
 
-    resetFormularioEditar(){
+    resetFormularioEditar() {
       this.dialogEditarActividad = false;
       this.$refs.form_editarActividad.resetValidation();
       this.detalleEditar.id = "";
@@ -631,7 +663,7 @@ export default {
       this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
 
-    cargarDatosEditar(detalle){
+    cargarDatosEditar(detalle) {
       this.detalleEditar.id = detalle.id;
       this.detalleEditar.fecha = detalle.fecha;
       this.detalleEditar.semana = detalle.semana;
@@ -647,29 +679,35 @@ export default {
       var idPlan = this.plan.id;
       var idDetalle = this.detalleEditar.id;
 
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"
-      +cursoId+"/plan-de-clases/"+idPlan+"/detalle/"+idDetalle;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle/" +
+        idDetalle;
 
       const request = {
         fecha: this.fechaAddObs,
         semana: this.detalleEditar.semana,
         saber_tema: this.detalleEditar.saber_tema,
         actividad: this.detalleEditar.actividad,
-        observacion: this.detalleEditar.observacion
-      }
+        observacion: this.detalleEditar.observacion,
+      };
 
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {
           this.resetFormularioEditar();
-          this.obtenerPlanClases(); 
+          this.obtenerPlanClases();
         })
-        .catch((error) => {
-          
-        });
+        .catch((error) => {});
     },
 
-    cargarIDeliminarActividad(detalle){
+    cargarIDeliminarActividad(detalle) {
       this.dialogEliminarActividad = true;
       this.idEliminarActividad = detalle.id;
     },
@@ -680,25 +718,29 @@ export default {
       var idPlan = this.plan.id;
       var idDetalle = this.idEliminarActividad;
 
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"
-      +cursoId+"/plan-de-clases/"+idPlan+"/detalle/"+idDetalle;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle/" +
+        idDetalle;
 
       axios
-      .delete(url, this.$store.state.config)
-      .then((result)=>{
-        this.dialogEliminarActividad = false;
-        this.obtenerPlanClases();
-      })
-      .catch((error)=>{
-
-      });
+        .delete(url, this.$store.state.config)
+        .then((result) => {
+          this.dialogEliminarActividad = false;
+          this.obtenerPlanClases();
+        })
+        .catch((error) => {});
     },
 
-    click(){
+    click() {
       console.log("Se realizo un click en el boton");
     },
-
-
   },
 };
 </script>
