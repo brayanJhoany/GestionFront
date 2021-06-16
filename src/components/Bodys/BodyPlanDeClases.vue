@@ -33,23 +33,210 @@
         </v-card>
         <section id="claseYconsultas">
           <v-row align="center" justify="center" class="mt-5">
-            <v-col cols="6" md="2">
-              <v-text-field
-                v-model="plan.horarioClases"
-                label="Horario de clases"
-              ></v-text-field>
+            <v-col class="mb-6">
+              <strong>Añadir horario de consulta</strong>
             </v-col>
-            <v-col cols="6" md="2">
-              <v-text-field
-                v-model="plan.horarioConsultas"
-                label="Horario de consultas"
-              ></v-text-field>
+            <v-col >
+              <v-select
+                :items="dias"
+                label="Día"
+                solo
+              ></v-select>
             </v-col>
-            <v-col cols="6" md="2">
-              <v-btn color="primary" elevation="2">Guardar</v-btn>
+            
+            <v-col>
+              <v-menu
+                ref="menu4"
+                v-model="menu4"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time4"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time4"
+                    label="Hora Inicio"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu4"
+                  v-model="time4"
+                  full-width
+                  @click:minute="$refs.menu4.save(time4)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col>
+
+
+              <v-menu
+                ref="menu5"
+                v-model="menu5"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time5"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time5"
+                    label="Hora Fin"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu5"
+                  v-model="time5"
+                  full-width
+                  @click:minute="$refs.menu5.save(time5)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col class="mb-6">
+              <v-btn color="primary" elevation="2">Añadir</v-btn>
+            </v-col>
+          </v-row>
+
+          <v-divider></v-divider>
+
+          <v-row align="center" justify="center" class="mt-5">
+            <v-col class="mb-6">
+              <strong>Añadir horario de clases</strong>
+            </v-col>
+            <v-col >
+              <v-select
+                :items="dias"
+                label="Día"
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col>
+              <v-menu
+                ref="menu6"
+                v-model="menu6"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time6"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time6"
+                    label="Hora Inicio"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu6"
+                  v-model="time6"
+                  full-width
+                  @click:minute="$refs.menu6.save(time6)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col>
+
+
+              <v-menu
+                ref="menu7"
+                v-model="menu7"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time7"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time7"
+                    label="Hora Fin"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu7"
+                  v-model="time7"
+                  full-width
+                  @click:minute="$refs.menu7.save(time7)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col class="mb-6">
+              <v-btn color="primary" elevation="2">Añadir</v-btn>
+            </v-col>
+          </v-row>
+          
+          <v-divider></v-divider>
+
+          <v-row class="mt-6">
+            <v-col justify="center" align="center">
+              <strong>Horario Consulta</strong>
+            </v-col>
+            <v-col justify="center" align="center">
+              <strong>Horario Clases</strong>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-data-table
+                :headers="headers_horario_consulta"
+                :items="body_horario_consulta"
+                :items-per-page="5"
+                class="elevation-1"
+              ></v-data-table>              
+            </v-col>
+            <v-col>
+              <v-data-table
+                :headers="headers_horario_clase"
+                :items="body_horario_clase"
+                :items-per-page="5"
+                class="elevation-1"
+              ></v-data-table>
             </v-col>
           </v-row>
         </section>
+
+        <v-divider class="mt-10"></v-divider>
+
         <section id="actividades">
           <v-card class="mt-13" color="info">
             <v-card-title class="headline text--center" primary-title>
@@ -450,6 +637,27 @@ export default {
   Volvername: "PlanDeClases",
   data() {
     return {
+      dias: ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"],
+      headers_horario_consulta: [
+        {text: "Dia", align: "start", value: "dia", sortable: false},
+        {text: "Inicio", value: "hora_inicio", sortable: false},
+        {text: "Término", value: "hora_termino", sortable: false},
+      ],
+      headers_horario_clase: [
+
+        {text: "Dia", align: "start", value: "dia", sortable: false},
+        {text: "Inicio", value: "hora_inicio", sortable: false},
+        {text: "Término", value: "hora_termino", sortable: false},
+      ],
+      body_horario_consulta: [
+        {dia: "Martes", hora_inicio: "9:40", hora_termino: "12:00"},
+        {dia: "Viernes", hora_inicio: "10:50", hora_termino: "11:50"},
+      ],
+      body_horario_clase: [
+        {dia: "Lunes", hora_inicio: "", hora_termino: ""},
+        {dia: "Miercoles", hora_inicio: "", hora_termino: ""},
+        {dia: "Viernes", hora_inicio: "", hora_termino: ""},
+      ],
       dialogAgregarActividad: false,
       form_añadirActividadValido: false,
       dialogEditarActividad: false,
@@ -461,12 +669,21 @@ export default {
       fechaUpObs: new Date().toISOString().substr(0, 10),
       menu: false,
       menu2: false,
+      menu4: false,
+      menu5: false,
+      menu6: false,
+      menu7: false,
+      time4: null,
+      time5: null,
+      time6: null,
+      time7: null,
       landscape: false,
       semana_selec: "",
       semanas: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26, 27,
       ],
+
       headers: [
         { text: "Fecha", align: "start", value: "name", sortable: false },
         { text: "Saber/Tema", value: "calories", sortable: false },
