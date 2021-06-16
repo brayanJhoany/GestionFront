@@ -1012,7 +1012,9 @@
 
 <script>
 import Volver from "@/components/Globales/Volver.vue";
+import { mapState, mapMutations } from "vuex";
 
+import axios from "axios";
 export default {
   components: {
     Volver,
@@ -1120,12 +1122,56 @@ export default {
       tituloDialogEliminarOpciones: "",
       tipoDialogEliminarOpciones: "",
       labelDialogEliminarOpciones: "",
+      //allcursos
+      allCursos: [],
     };
+  },
+  beforeMount() {
+    this.obtenerCursos();
+  },
+  computed: {
+    getUserValido() {
+      return this.$store.getters.usuario;
+    },
   },
   methods: {
     click() {
       console.log("Se realizo un click en el boton");
     },
+    obtenerCursos() {
+      var usuario = this.getUserValido;
+      console.log(usuario);
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/allcursos";
+      console.log(url);
+      axios
+        .get(url)
+        .then((result) => {
+          const response = result.data;
+          if (response.error === false) {
+            const cursos = response.cursos;
+            for (let index = 0; index < cursos.length; index += 1) {
+              const element = cursos[index];
+              const curso = {
+                id: element.id,
+                nombre: element.nombre,
+              };
+              this.allCursos =
+                this.allCursos.length > 0
+                  ? [...this.allCursos, curso]
+                  : [curso];
+            }
+            console.log(this.allCursos);
+          }
+        })
+        .catch((error) => {
+          console.log("error");
+        });
+    },
+
     cargarDatoseditarRequisito(r, i) {
       this.editarRequisito.id = i;
       this.editarRequisito.nombre = r;
