@@ -36,7 +36,7 @@
               </strong>
               <v-select
                 :items="arrayCreditos"
-                v-model="syllabus.nrocreditos"
+                v-model="syllabus.nroCreditos"
                 :disabled="booleanCreditos"
                 class="ml-2"
               ></v-select>
@@ -90,7 +90,7 @@
             </v-card-title>
             <v-card-title class="headline text--center" primary-title>
               <v-text-field
-                v-model="syllabus.areaconocimiento"
+                v-model="syllabus.areaConocimiento"
                 color="secondary"
                 :disabled="booleanAreaConocimiento"
                 :rules="[
@@ -219,11 +219,11 @@
           </v-card>
           <v-list>
             <v-list-item
-              v-for="requisito in syllabus.prerequisitos"
-              :key="requisito.id"
+              v-for="(requisito, i) in syllabus.preRequisito"
+              :key="i"
             >
               <v-list-item-content>
-                <v-list-item-title>{{ requisito.nombre }}</v-list-item-title>
+                <v-list-item-title>{{ requisito }}</v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
                 <v-tooltip bottom color="primary">
@@ -235,7 +235,7 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="cargarDatoseditarRequisito(requisito)"
+                      @click="cargarDatoseditarRequisito(requisito, i)"
                     >
                       <v-icon color="primary"> fas fa-edit </v-icon>
                     </v-btn>
@@ -253,7 +253,7 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="cargarDatosEliminarRequisito()"
+                      @click="cargarDatosEliminarRequisito(i)"
                     >
                       <v-icon color="warning"> fas fa-trash-alt </v-icon>
                     </v-btn>
@@ -274,7 +274,7 @@
             </v-card-title>
             <v-card-title class="headline text--center" primary-title>
               <v-text-field
-                v-model="syllabus.responsablesyllabus"
+                v-model="syllabus.responsableSyllabus"
                 color="secondary"
                 :disabled="booleanResponsableSyllabus"
                 :rules="[
@@ -380,7 +380,8 @@
                           'Editar competencia',
                           'competencias',
                           'Competencia',
-                          competencia
+                          competencia,
+                          i
                         )
                       "
                     >
@@ -403,7 +404,8 @@
                           'competencia',
                           'competencias',
                           'la competencia',
-                          competencia
+                          competencia,
+                          i
                         )
                       "
                     >
@@ -420,7 +422,7 @@
                       class="DIV mb-2"
                       style="height: 80px; overflow: auto; font-size: 90%"
                     >
-                      {{ competencia.competencia }}
+                      {{ competencia }}
                     </div>
                   </v-col>
                 </v-row>
@@ -482,7 +484,8 @@
                           'Editar aprendizaje',
                           'aprendizajes',
                           'Aprendizaje',
-                          aprendizaje
+                          aprendizaje,
+                          i
                         )
                       "
                     >
@@ -505,7 +508,8 @@
                           'aprendizaje',
                           'aprendizajes',
                           'el aprendizaje',
-                          aprendizaje
+                          aprendizaje,
+                          i
                         )
                       "
                     >
@@ -522,7 +526,7 @@
                       class="DIV mb-2"
                       style="overflow: auto; font-size: 90%"
                     >
-                      {{ aprendizaje.aprendizaje }}
+                      {{ aprendizaje }}
                     </div>
                   </v-col>
                 </v-row>
@@ -586,7 +590,8 @@
                           'Editar unidad',
                           'unidades',
                           'Unidad',
-                          unidad
+                          unidad,
+                          i
                         )
                       "
                     >
@@ -609,7 +614,8 @@
                           'unidad',
                           'unidades',
                           'la unidad',
-                          unidad
+                          unidad,
+                          i
                         )
                       "
                     >
@@ -626,7 +632,7 @@
                       class="DIV mb-2"
                       style="overflow: auto; font-size: 90%"
                     >
-                      {{ unidad.unidad }}
+                      {{ unidad }}
                     </div>
                   </v-col>
                 </v-row>
@@ -743,7 +749,8 @@
                           'Editar bibliografia',
                           'bibliografia',
                           'Bibliografia',
-                          bibliografia
+                          bibliografia,
+                          i
                         )
                       "
                     >
@@ -766,7 +773,8 @@
                           'bibliografia',
                           'bibliografia',
                           'la bibliografia',
-                          bibliografia
+                          bibliografia,
+                          i
                         )
                       "
                     >
@@ -783,7 +791,7 @@
                       class="DIV mb-2"
                       style="height: 80px; overflow: auto; font-size: 90%"
                     >
-                      {{ bibliografia.bibliografia }}
+                      {{ bibliografia }}
                     </div>
                   </v-col>
                 </v-row>
@@ -1013,74 +1021,28 @@ export default {
   data() {
     return {
       syllabus: {
-        id: " ",
-        nrocreditos: 10,
-        areaconocimiento: "Ingeniería y Tecnología",
+        nroCreditos: 10,
+        areaConocimiento: "Ingeniería y Tecnología",
         semestre: 6,
-        prerequisitos: [
-          {
-            id: 1,
-            nombre: "algoritmos",
-          },
-          {
-            id: 2,
-            nombre: "taller",
-          },
-          {
-            id: 3,
-            nombre: "Proyecto de progra",
-          },
-        ],
-        responsablesyllabus: "INGENIERIA CIVIL EN COMPUTACION",
+        preRequisito: ["algoritmos", "taller", "Proyecto de progra"],
+        responsableSyllabus: "INGENIERIA CIVIL EN COMPUTACION",
         competencia: [
-          {
-            id: 1,
-            competencia:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
-          {
-            id: 2,
-            competencia:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
         ],
         aprendizaje: [
-          {
-            id: 1,
-            aprendizaje:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
-          {
-            id: 2,
-            aprendizaje:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
         ],
         unidad: [
-          {
-            id: 1,
-            unidad:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
-          {
-            id: 2,
-            unidad:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
         ],
         metodologia:
           " Clases teóricas o cátedras El propósito de este método es compartir conocimientos y activar procesos cognitivos. Se denomina como clase teórica una modalidad organizativa de la enseñanza en la que se utiliza principalmente como estrategia didáctica la exposición verbal por parte del profesor de los saberes que contempla el módulo. Aunque esta exposición se puede realizar de diversas formas y con distintos medios, la característica esencial de esta modalidad de enseñanza es su unidireccionalidad -hablar a los estudiantes- ya que tanto la selección de los saberes a exponer como la forma de hacerlo constituyen una decisión del profesor (De Miguel, 2005) Método socrático",
         bibliografia: [
-          {
-            id: 1,
-            bibliografia:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
-          {
-            id: 2,
-            bibliografia:
-              "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          },
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
+          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
         ],
       },
       cargando: false,
@@ -1164,12 +1126,13 @@ export default {
     click() {
       console.log("Se realizo un click en el boton");
     },
-    cargarDatoseditarRequisito(r) {
-      this.editarRequisito.id = r.id;
-      this.editarRequisito.nombre = r.nombre;
+    cargarDatoseditarRequisito(r, i) {
+      this.editarRequisito.id = i;
+      this.editarRequisito.nombre = r;
       this.dialogEditarRequisito = true;
     },
-    cargarDatosEliminarRequisito(r) {
+    cargarDatosEliminarRequisito(i) {
+      const idEliminarRequisito = i;
       this.dialogEliminarRequisito = true;
     },
     cargarDatosDialogFullScreen(titulo, tipo, label) {
@@ -1183,22 +1146,23 @@ export default {
       }
       this.dialog = true;
     },
-    cargarEditarDatosDialogFullScreen(titulo, tipo, label, item) {
+    cargarEditarDatosDialogFullScreen(titulo, tipo, label, item, idItem) {
       this.tituloDialogFullScreen = titulo;
       this.tipoDialogFullScreen = tipo;
       this.labelDialogFullScreen = label;
+      const idItemEditar = idItem;
       if (this.tipoDialogFullScreen == "competencias") {
-        this.infoDialogFullScreen = item.competencia;
+        this.infoDialogFullScreen = item;
       } else if (this.tipoDialogFullScreen == "aprendizajes") {
-        this.infoDialogFullScreen = item.aprendizaje;
+        this.infoDialogFullScreen = item;
       } else if (this.tipoDialogFullScreen == "unidades") {
-        this.infoDialogFullScreen = item.unidad;
+        this.infoDialogFullScreen = item;
       } else if (this.tipoDialogFullScreen == "bibliografia") {
-        this.infoDialogFullScreen = item.bibliografia;
+        this.infoDialogFullScreen = item;
       }
       this.dialog = true;
     },
-    cargarEliminarDialogOpciones(titulo, tipo, label, item) {
+    cargarEliminarDialogOpciones(titulo, tipo, label, item, idItemEliminar) {
       this.tituloDialogEliminarOpciones = titulo;
       this.tipoDialogEliminarOpciones = tipo;
       this.labelDialogEliminarOpciones = label;
