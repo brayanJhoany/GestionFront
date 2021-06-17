@@ -33,17 +33,210 @@
         </v-card>
         <section id="claseYconsultas">
           <v-row align="center" justify="center" class="mt-5">
-            <v-col cols="6" md="2">
-              <v-text-field v-model="plan.horarioClases" label="Horario de clases"></v-text-field>
+            <v-col class="mb-6">
+              <strong>Añadir horario de consulta</strong>
             </v-col>
-            <v-col cols="6" md="2">
-              <v-text-field v-model="plan.horarioConsultas" label="Horario de consultas"></v-text-field>
+            <v-col >
+              <v-select
+                :items="dias"
+                label="Día"
+                solo
+              ></v-select>
             </v-col>
-            <v-col cols="6" md="2">
-              <v-btn color="primary" elevation="2">Guardar</v-btn>
+            
+            <v-col>
+              <v-menu
+                ref="menu4"
+                v-model="menu4"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time4"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time4"
+                    label="Hora Inicio"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu4"
+                  v-model="time4"
+                  full-width
+                  @click:minute="$refs.menu4.save(time4)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col>
+
+
+              <v-menu
+                ref="menu5"
+                v-model="menu5"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time5"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time5"
+                    label="Hora Fin"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu5"
+                  v-model="time5"
+                  full-width
+                  @click:minute="$refs.menu5.save(time5)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col class="mb-6">
+              <v-btn color="primary" elevation="2">Añadir</v-btn>
+            </v-col>
+          </v-row>
+
+          <v-divider></v-divider>
+
+          <v-row align="center" justify="center" class="mt-5">
+            <v-col class="mb-6">
+              <strong>Añadir horario de clases</strong>
+            </v-col>
+            <v-col >
+              <v-select
+                :items="dias"
+                label="Día"
+                solo
+              ></v-select>
+            </v-col>
+
+            <v-col>
+              <v-menu
+                ref="menu6"
+                v-model="menu6"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time6"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time6"
+                    label="Hora Inicio"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu6"
+                  v-model="time6"
+                  full-width
+                  @click:minute="$refs.menu6.save(time6)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col>
+
+
+              <v-menu
+                ref="menu7"
+                v-model="menu7"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="time7"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time7"
+                    label="Hora Fin"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    solo
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="menu7"
+                  v-model="time7"
+                  full-width
+                  @click:minute="$refs.menu7.save(time7)"
+                ></v-time-picker>
+              </v-menu>
+
+
+            </v-col>
+            <v-col class="mb-6">
+              <v-btn color="primary" elevation="2">Añadir</v-btn>
+            </v-col>
+          </v-row>
+          
+          <v-divider></v-divider>
+
+          <v-row class="mt-6">
+            <v-col justify="center" align="center">
+              <strong>Horario Consulta</strong>
+            </v-col>
+            <v-col justify="center" align="center">
+              <strong>Horario Clases</strong>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-data-table
+                :headers="headers_horario_consulta"
+                :items="body_horario_consulta"
+                :items-per-page="5"
+                class="elevation-1"
+              ></v-data-table>              
+            </v-col>
+            <v-col>
+              <v-data-table
+                :headers="headers_horario_clase"
+                :items="body_horario_clase"
+                :items-per-page="5"
+                class="elevation-1"
+              ></v-data-table>
             </v-col>
           </v-row>
         </section>
+
+        <v-divider class="mt-10"></v-divider>
+
         <section id="actividades">
           <v-card class="mt-13" color="info">
             <v-card-title class="headline text--center" primary-title>
@@ -210,7 +403,12 @@
             v-model="form_añadirActividadValido"
             lazy-validation
           >
-            <v-select v-model="semana_selec" ref="semana" :items="semanas" label="Semana"></v-select>
+            <v-select
+              v-model="semana_selec"
+              ref="semana"
+              :items="semanas"
+              label="Semana"
+            ></v-select>
             <v-menu
               ref="menu"
               v-model="menu"
@@ -290,7 +488,6 @@
         </v-container>
       </v-card>
     </v-dialog>
-
     <v-dialog v-model="dialogEditarActividad" persistent max-width="500px">
       <v-card class="mx-auto" max-width="500">
         <v-card-title class="headline primary text--center" primary-title>
@@ -303,7 +500,12 @@
             v-model="form_editarActividadValido"
             lazy-validation
           >
-            <v-select v-model="detalleEditar.semana" ref="semana" :items="semanas" label="Semana"></v-select>
+            <v-select
+              v-model="detalleEditar.semana"
+              ref="semana"
+              :items="semanas"
+              label="Semana"
+            ></v-select>
             <v-menu
               ref="menu"
               v-model="menu"
@@ -435,6 +637,27 @@ export default {
   Volvername: "PlanDeClases",
   data() {
     return {
+      dias: ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"],
+      headers_horario_consulta: [
+        {text: "Dia", align: "start", value: "dia", sortable: false},
+        {text: "Inicio", value: "hora_inicio", sortable: false},
+        {text: "Término", value: "hora_termino", sortable: false},
+      ],
+      headers_horario_clase: [
+
+        {text: "Dia", align: "start", value: "dia", sortable: false},
+        {text: "Inicio", value: "hora_inicio", sortable: false},
+        {text: "Término", value: "hora_termino", sortable: false},
+      ],
+      body_horario_consulta: [
+        {dia: "Martes", hora_inicio: "9:40", hora_termino: "12:00"},
+        {dia: "Viernes", hora_inicio: "10:50", hora_termino: "11:50"},
+      ],
+      body_horario_clase: [
+        {dia: "Lunes", hora_inicio: "", hora_termino: ""},
+        {dia: "Miercoles", hora_inicio: "", hora_termino: ""},
+        {dia: "Viernes", hora_inicio: "", hora_termino: ""},
+      ],
       dialogAgregarActividad: false,
       form_añadirActividadValido: false,
       dialogEditarActividad: false,
@@ -446,12 +669,21 @@ export default {
       fechaUpObs: new Date().toISOString().substr(0, 10),
       menu: false,
       menu2: false,
+      menu4: false,
+      menu5: false,
+      menu6: false,
+      menu7: false,
+      time4: null,
+      time5: null,
+      time6: null,
+      time7: null,
       landscape: false,
       semana_selec: "",
       semanas: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26, 27,
       ],
+
       headers: [
         { text: "Fecha", align: "start", value: "name", sortable: false },
         { text: "Saber/Tema", value: "calories", sortable: false },
@@ -464,32 +696,31 @@ export default {
       auxDetallesPlan: [],
 
       //almacena los datos del plan de clases con el que estamos trabajando
-      plan:{
+      plan: {
         id: "",
         horarioClases: "",
-        horarioConsultas : "",
+        horarioConsultas: "",
       },
 
       //almacena los datos de la nueva actividad que vamos a agregar al plan de clases
-      detalle:{
+      detalle: {
         semana: "",
         fecha: "",
         actividad: "",
         saber_tema: "",
-        observacion: ""
+        observacion: "",
       },
 
       idEliminarActividad: "",
 
-      detalleEditar:{
+      detalleEditar: {
         id: "",
         semana: "",
         fecha: "",
         actividad: "",
         saber_tema: "",
-        observacion: ""
+        observacion: "",
       },
-
     };
   },
 
@@ -504,12 +735,12 @@ export default {
         easing: "linear",
       };
     },
-    getUserValido(){
-            return this.$store.getters.usuario;
-        }
+    getUserValido() {
+      return this.$store.getters.usuario;
+    },
   },
 
-  beforeMount(){
+  beforeMount() {
     this.obtenerPlanClases();
   },
   save(date) {
@@ -517,10 +748,16 @@ export default {
   },
 
   methods: {
-    obtenerPlanClases(){
+    obtenerPlanClases() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url_plan = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clases";
+      const url_plan =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases";
       this.cargando = true;
 
       this.detallesPlan = [];
@@ -528,89 +765,101 @@ export default {
       this.plan = {
         id: "",
         horarioClases: "",
-        horarioConsultas: ""
-      }
+        horarioConsultas: "",
+      };
 
       //La primera consulta es para obtener los datos del plan de clases.
       axios
         .get(url_plan)
-        .then((result)=>{
-            const response = result.data;
-            console.log(response);
-            if(response.error === false){
-              const auxPlan = {
-                id: response.PlanDeClase[0].id,
-                horarioClases: response.PlanDeClase[0].horarioDeClases,
-                horarioConsultas: response.PlanDeClase[0].horarioDeConsultas
-              }
+        .then((result) => {
+          const response = result.data;
+          console.log(response);
+          if (response.error === false) {
+            const auxPlan = {
+              id: response.PlanDeClase[0].id,
+              horarioClases: response.PlanDeClase[0].horarioDeClases,
+              horarioConsultas: response.PlanDeClase[0].horarioDeConsultas,
+            };
 
-              this.plan.id = auxPlan.id;
-              this.plan.horarioClases = auxPlan.horarioClases;
-              this.plan.horarioConsultas = auxPlan.horarioConsultas;
-              
-              //en la api de rutas esta como "plan-de-clase" en vez de "plan-de-clases".
-              const url_detalle = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clase/"+auxPlan.id+"/detalles";
-      
-              //la segunda consulta es para obtener la lista de actividades dentro del plan de clases.
-              axios
-              .get(url_detalle)
-              .then((result) => {
-                const response = result.data;
-                if(response.error === false){
-                  const lista_detalles = response.DetallePlanDeClase;
-                  
-                  for( let index = 0; index < lista_detalles.length; index += 1){
-                    const auxDetalle = response.DetallePlanDeClase[index];
+            this.plan.id = auxPlan.id;
+            this.plan.horarioClases = auxPlan.horarioClases;
+            this.plan.horarioConsultas = auxPlan.horarioConsultas;
 
-                    const detalle = {
-                      id: auxDetalle.id,
-                      fecha: auxDetalle.fecha,
-                      semana: auxDetalle.semana,
-                      saber_tema: auxDetalle.saber_tema,
-                      actividad: auxDetalle.actividad,
-                      observacion: auxDetalle.observacion,
-                    }
+            //en la api de rutas esta como "plan-de-clase" en vez de "plan-de-clases".
+            const url_detalle =
+              this.$store.state.rutaDinamica +
+              "profesor/" +
+              usuario.id +
+              "/curso/" +
+              cursoId +
+              "/plan-de-clase/" +
+              auxPlan.id +
+              "/detalles";
 
-                    this.auxDetallesPlan[index] = detalle;
-                  }
-                  this.cargando = false;
-                  this.detallesPlan = this.auxDetallesPlan;
+            //la segunda consulta es para obtener la lista de actividades dentro del plan de clases.
+            axios.get(url_detalle).then((result) => {
+              const response = result.data;
+              if (response.error === false) {
+                const lista_detalles = response.DetallePlanDeClase;
+
+                for (let index = 0; index < lista_detalles.length; index += 1) {
+                  const auxDetalle = response.DetallePlanDeClase[index];
+
+                  const detalle = {
+                    id: auxDetalle.id,
+                    fecha: auxDetalle.fecha,
+                    semana: auxDetalle.semana,
+                    saber_tema: auxDetalle.saber_tema,
+                    actividad: auxDetalle.actividad,
+                    observacion: auxDetalle.observacion,
+                  };
+
+                  this.auxDetallesPlan[index] = detalle;
                 }
-              });
-            }
+                this.cargando = false;
+                this.detallesPlan = this.auxDetallesPlan;
+              }
+            });
+          }
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    agregarActividad(){
+    agregarActividad() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
       var idPlan = this.plan.id;
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"+cursoId+"/plan-de-clases/"+idPlan+"/detalle";
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle";
 
       const request = {
         fecha: this.fechaAddObs,
         semana: this.semana_selec,
         saber_tema: this.detalle.saber_tema,
         actividad: this.detalle.actividad,
-        observacion: this.detalle.observacion
-      }
+        observacion: this.detalle.observacion,
+      };
 
       axios
-      .post(url, request, this.$store.state.config)
-      .then((result) => {
-        this.resetFormularioAgregar();
-        const response = result.data;
-        this.obtenerPlanClases();
-      })
-      .catch((error) => {
-
-      });
+        .post(url, request, this.$store.state.config)
+        .then((result) => {
+          this.resetFormularioAgregar();
+          const response = result.data;
+          this.obtenerPlanClases();
+        })
+        .catch((error) => {});
     },
 
-    resetFormularioAgregar(){
+    resetFormularioAgregar() {
       this.dialogAgregarActividad = false;
       this.$refs.form_añadirActividad.resetValidation();
       this.detalle.actividad = "";
@@ -620,7 +869,7 @@ export default {
       this.semana_selec = "";
     },
 
-    resetFormularioEditar(){
+    resetFormularioEditar() {
       this.dialogEditarActividad = false;
       this.$refs.form_editarActividad.resetValidation();
       this.detalleEditar.id = "";
@@ -631,7 +880,7 @@ export default {
       this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
 
-    cargarDatosEditar(detalle){
+    cargarDatosEditar(detalle) {
       this.detalleEditar.id = detalle.id;
       this.detalleEditar.fecha = detalle.fecha;
       this.detalleEditar.semana = detalle.semana;
@@ -647,29 +896,35 @@ export default {
       var idPlan = this.plan.id;
       var idDetalle = this.detalleEditar.id;
 
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"
-      +cursoId+"/plan-de-clases/"+idPlan+"/detalle/"+idDetalle;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle/" +
+        idDetalle;
 
       const request = {
         fecha: this.fechaAddObs,
         semana: this.detalleEditar.semana,
         saber_tema: this.detalleEditar.saber_tema,
         actividad: this.detalleEditar.actividad,
-        observacion: this.detalleEditar.observacion
-      }
+        observacion: this.detalleEditar.observacion,
+      };
 
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {
           this.resetFormularioEditar();
-          this.obtenerPlanClases(); 
+          this.obtenerPlanClases();
         })
-        .catch((error) => {
-          
-        });
+        .catch((error) => {});
     },
 
-    cargarIDeliminarActividad(detalle){
+    cargarIDeliminarActividad(detalle) {
       this.dialogEliminarActividad = true;
       this.idEliminarActividad = detalle.id;
     },
@@ -680,25 +935,29 @@ export default {
       var idPlan = this.plan.id;
       var idDetalle = this.idEliminarActividad;
 
-      const url = this.$store.state.rutaDinamica + "profesor/"+usuario.id+"/curso/"
-      +cursoId+"/plan-de-clases/"+idPlan+"/detalle/"+idDetalle;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        cursoId +
+        "/plan-de-clases/" +
+        idPlan +
+        "/detalle/" +
+        idDetalle;
 
       axios
-      .delete(url, this.$store.state.config)
-      .then((result)=>{
-        this.dialogEliminarActividad = false;
-        this.obtenerPlanClases();
-      })
-      .catch((error)=>{
-
-      });
+        .delete(url, this.$store.state.config)
+        .then((result) => {
+          this.dialogEliminarActividad = false;
+          this.obtenerPlanClases();
+        })
+        .catch((error) => {});
     },
 
-    click(){
+    click() {
       console.log("Se realizo un click en el boton");
     },
-
-
   },
 };
 </script>
