@@ -38,6 +38,7 @@
             </v-col>
             <v-col >
               <v-select
+                v-model="dia_consulta"
                 :items="dias"
                 label="Día"
                 solo
@@ -113,7 +114,7 @@
 
             </v-col>
             <v-col class="mb-6">
-              <v-btn color="primary" elevation="2">Añadir</v-btn>
+              <v-btn @click="agregarHorarioAtencion" color="primary" elevation="2">Añadir</v-btn>
             </v-col>
           </v-row>
 
@@ -125,6 +126,7 @@
             </v-col>
             <v-col >
               <v-select
+                v-model="dia_clases"
                 :items="dias"
                 label="Día"
                 solo
@@ -200,7 +202,7 @@
 
             </v-col>
             <v-col class="mb-6">
-              <v-btn color="primary" elevation="2">Añadir</v-btn>
+              <v-btn @click="agregarHorarioClases" color="primary" elevation="2">Añadir</v-btn>
             </v-col>
           </v-row>
           
@@ -219,7 +221,7 @@
             <v-col>
               <v-data-table
                 :headers="headers_horario_consulta"
-                :items="body_horario_consulta"
+                :items="body_horario_consulta.horarios"
                 :items-per-page="5"
                 class="elevation-1"
               ></v-data-table>              
@@ -227,7 +229,7 @@
             <v-col>
               <v-data-table
                 :headers="headers_horario_clase"
-                :items="body_horario_clase"
+                :items="body_horario_clase.horarios"
                 :items-per-page="5"
                 class="elevation-1"
               ></v-data-table>
@@ -515,12 +517,12 @@
               min-width="290px"
             >
               <template v-slot:activator="{ on }">
-                <v-text-field v-model="fechaAddObs" readonly v-on="on">
+                <v-text-field v-model="fechaUpObs" readonly v-on="on">
                 </v-text-field>
               </template>
               <v-date-picker
                 ref="picker"
-                v-model="fechaAddObs"
+                v-model="fechaUpObs"
                 :max="new Date().toISOString().substr(0, 10)"
                 min="1950-01-01"
                 @change="save"
@@ -578,7 +580,7 @@
                 :loading="cargando"
                 @click="editarActividad"
               >
-                <h4 class="white--text">Agregar</h4>
+                <h4 class="white--text">Editar</h4>
               </v-btn>
             </div>
           </v-form>
@@ -649,15 +651,18 @@ export default {
         {text: "Inicio", value: "hora_inicio", sortable: false},
         {text: "Término", value: "hora_termino", sortable: false},
       ],
-      body_horario_consulta: [
-        {dia: "Martes", hora_inicio: "9:40", hora_termino: "12:00"},
-        {dia: "Viernes", hora_inicio: "10:50", hora_termino: "11:50"},
-      ],
-      body_horario_clase: [
-        {dia: "Lunes", hora_inicio: "", hora_termino: ""},
-        {dia: "Miercoles", hora_inicio: "", hora_termino: ""},
-        {dia: "Viernes", hora_inicio: "", hora_termino: ""},
-      ],
+      body_horario_consulta: {
+        horarios:[
+          //{dia: "Martes", hora_inicio: "9:40", hora_termino: "12:00"}
+        ]
+      },
+
+      body_horario_clase: {
+        horarios: [
+          //{dia: "Lunes", hora_inicio: "", hora_termino: ""}
+        ]
+      },
+
       dialogAgregarActividad: false,
       form_añadirActividadValido: false,
       dialogEditarActividad: false,
@@ -679,6 +684,8 @@ export default {
       time7: null,
       landscape: false,
       semana_selec: "",
+      dia_consulta: "",
+      dia_clases: "",
       semanas: [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26, 27,
@@ -711,8 +718,10 @@ export default {
         observacion: "",
       },
 
+      //Almacena el id de la actividad que se eliminará
       idEliminarActividad: "",
 
+      //Almacena los datos de una actividad para mostrarlos en el dialog y luego modificarlos.
       detalleEditar: {
         id: "",
         semana: "",
@@ -748,6 +757,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Permite obtener los datos y actividades pertenecientes al plan de clases de un curso.
+     */
     obtenerPlanClases() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -773,19 +785,41 @@ export default {
         .get(url_plan)
         .then((result) => {
           const response = result.data;
-          console.log(response);
           if (response.error === false) {
             const auxPlan = {
               id: response.PlanDeClase[0].id,
-              horarioClases: response.PlanDeClase[0].horarioDeClases,
-              horarioConsultas: response.PlanDeClase[0].horarioDeConsultas,
+              horarioClases: response.PlanDeClase[0].horarioDeClases.horarios,
+              horarioConsultas: response.PlanDeClase[0].horarioDeConsulta.horarios,
             };
 
             this.plan.id = auxPlan.id;
             this.plan.horarioClases = auxPlan.horarioClases;
             this.plan.horarioConsultas = auxPlan.horarioConsultas;
 
-            //en la api de rutas esta como "plan-de-clase" en vez de "plan-de-clases".
+            //obtiene los horarios de clase de un curso desde el json almacenado en la base de datos.
+            for(let index = 0; index < this.plan.horarioClases.length; index += 1){
+              const horario = {
+                dia: this.plan.horarioClases[index].dia,
+                hora_inicio: this.plan.horarioClases[index].hora_inicio,
+                hora_termino: this.plan.horarioClases[index].hora_termino
+              }
+
+              //console.log(horario);
+              this.body_horario_clase.horarios.push(horario);
+            }
+
+            //obtiene los horarios de atencion de profesor desde el json almacenado en la base de datos.
+            for(let index = 0; index < this.plan.horarioConsultas.length; index += 1){
+              const horario = {
+                dia: this.plan.horarioConsultas[index].dia,
+                hora_inicio: this.plan.horarioConsultas[index].hora_inicio,
+                hora_termino: this.plan.horarioConsultas[index].hora_termino
+              }
+
+              console.log(horario);
+              this.body_horario_consulta.horarios.push(horario);
+            }
+
             const url_detalle =
               this.$store.state.rutaDinamica +
               "profesor/" +
@@ -827,6 +861,9 @@ export default {
         });
     },
 
+    /**
+     * Permite agregar una nueva actividad al plan de clases de un curso.
+     */
     agregarActividad() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -844,7 +881,7 @@ export default {
       const request = {
         fecha: this.fechaAddObs,
         semana: this.semana_selec,
-        saber_tema: this.detalle.saber_tema,
+        saberTema: this.detalle.saber_tema,
         actividad: this.detalle.actividad,
         observacion: this.detalle.observacion,
       };
@@ -859,6 +896,11 @@ export default {
         .catch((error) => {});
     },
 
+    /**
+     * Vacía los formularios que se utilizan para agregar una nueva actividad.
+     * De esta forma, al abrir el dialog para almacenar una nueva actividad, los campos
+     * aparecen vacios.
+     */
     resetFormularioAgregar() {
       this.dialogAgregarActividad = false;
       this.$refs.form_añadirActividad.resetValidation();
@@ -869,6 +911,11 @@ export default {
       this.semana_selec = "";
     },
 
+    /**
+     * Vacía los formularios que se utilizan para editar una nueva actividad.
+     * De esta forma, al abrir el dialog para modificar los datos de una actividad, los campos
+     * aparecen vacios.
+     */
     resetFormularioEditar() {
       this.dialogEditarActividad = false;
       this.$refs.form_editarActividad.resetValidation();
@@ -877,12 +924,16 @@ export default {
       this.detalleEditar.saber_tema = "";
       this.detalleEditar.observacion = "";
       this.detalleEditar.fecha = "";
-      this.fechaAddObs = new Date().toISOString().substr(0, 10);
+      this.fechaUpObs = new Date().toISOString().substr(0, 10);
     },
 
+    /**
+     * Permite cargar los datos de una actividad a la interfaz dialog que nos permitirá editarlos.
+     */
     cargarDatosEditar(detalle) {
       this.detalleEditar.id = detalle.id;
       this.detalleEditar.fecha = detalle.fecha;
+      this.fechaUpObs = detalle.fecha;
       this.detalleEditar.semana = detalle.semana;
       this.detalleEditar.actividad = detalle.actividad;
       this.detalleEditar.saber_tema = detalle.saber_tema;
@@ -890,6 +941,9 @@ export default {
       this.dialogEditarActividad = true;
     },
 
+    /**
+     * Envia los datos que modificaremos de la actividad a la API para que se actualicen en la base de datos.
+     */
     editarActividad() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -908,9 +962,9 @@ export default {
         idDetalle;
 
       const request = {
-        fecha: this.fechaAddObs,
+        fecha: this.fechaUpObs,
         semana: this.detalleEditar.semana,
-        saber_tema: this.detalleEditar.saber_tema,
+        saberTema: this.detalleEditar.saber_tema,
         actividad: this.detalleEditar.actividad,
         observacion: this.detalleEditar.observacion,
       };
@@ -924,11 +978,19 @@ export default {
         .catch((error) => {});
     },
 
+    /**
+     * Almacena el id de la actividad que seleccionamos para ser eliminada y abre el 
+     * dialog de verificacion para eliminar una actividad.
+     * De esta forma, llamamos a la funcion de eliminar y obtiene el id desde una variable global.
+     */
     cargarIDeliminarActividad(detalle) {
       this.dialogEliminarActividad = true;
       this.idEliminarActividad = detalle.id;
     },
 
+    /**
+     * Envia los datos necesarios a la API para que se elimine la actividad en la base de datos.
+     */
     eliminarActividad() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -955,9 +1017,83 @@ export default {
         .catch((error) => {});
     },
 
-    click() {
-      console.log("Se realizo un click en el boton");
+    /**
+     * Permite agregar un nuevo horario de atencion al plan de clases y envia los datos a 
+     * la base de datos.
+     */
+    agregarHorarioAtencion(){
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+
+
+      const nuevo_horario = {
+        dia: this.dia_consulta,
+        hora_inicio: this.time4,
+        hora_termino: this.time5
+      }
+
+      this.body_horario_consulta.horarios.push(nuevo_horario);
+
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClases: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
     },
+
+    /**
+     * Permite agregar un nuevo horario de clases al plan de clases y envia los datos a la 
+     * base de datos.
+     */
+    agregarHorarioClases(){
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+      
+      const nuevo_horario = {
+        dia: this.dia_clases,
+        hora_inicio: this.time6,
+        hora_termino: this.time7
+      }
+
+      this.body_horario_clase.horarios.push(nuevo_horario);
+
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
+
+    }
   },
 };
 </script>
