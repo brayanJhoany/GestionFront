@@ -1,16 +1,18 @@
 <template>
   <div class="Administrador">
     <AppBarGlobal />
+    <Navegacion />
+
     <router-view></router-view>
     <!-- <FooterGlobal /> -->
-    <Navegacion />
   </div>
 </template>
 
 <script>
-import AppBarGlobal from "@/components/Globales/AppBarGlobal.vue";
-// import FooterGlobal from "@/components/Globales/FooterGlobal.vue";
 import Navegacion from "@/components/Globales/Navegacion.vue";
+import AppBarGlobal from "../components/Globales/AppBarGlobal";
+// import FooterGlobal from "@/components/Globales/FooterGlobal.vue";
+
 export default {
   components: {
     AppBarGlobal,

@@ -1,81 +1,95 @@
 <template>
   <v-navigation-drawer
     app
-    right
+    left
     v-model="drawers.drawer"
     :mini-variant="drawers.miniVarianteAdm"
     :permanent="$vuetify.breakpoint.mdAndUp"
     :temporary="$vuetify.breakpoint.smAndDown"
-    src="@/assets/Globales/drawer.jpg"
+    color="#054A91"
     mini-variant-width="80"
   >
     <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
       <template v-slot:activator="{ on }">
         <v-list-item
-          class="px-2 py-1 difuminado"
+          class="px-2 py-2 difuminado"
           active-class="activacion"
-          to="/administrador/perfil"
+          link
           v-on="on"
+          :to="{
+            name: 'Cursos',
+          }"
         >
-          <v-list-item-avatar>
+          <!--<v-list-item-avatar>
             <v-img src="@/assets/Globales/estudiante.jpg"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-title class="white--text letra pl-2"
-            ><strong>Perfil</strong></v-list-item-title
-          >
+          </v-list-item-avatar>-->
+          <v-list-item-content>
+            <v-list-item-title class="white--text letra pl-2 center">
+              <i class="fas fa-chalkboard-teacher mr-6"></i>
+              <strong> Mis Cursos</strong></v-list-item-title
+            >
+          </v-list-item-content>
         </v-list-item>
       </template>
-      <span><strong>Perfil</strong></span>
+      <span><strong>Mis Cursos</strong></span>
     </v-tooltip>
     <v-divider></v-divider>
-    <v-list style=" margine-right: 0; margine-left:0;">
+
+    <v-list
+      style="margine-right: 0; margine-left: 0"
+      v-for="curso in cursos"
+      :key="curso.id"
+    >
       <v-tooltip left color="primary" :disabled="!drawers.miniVarianteAdm">
         <template v-slot:activator="{ on }">
           <v-list-item
             v-on="on"
-            to="/administrador/usuarios"
+            :to="{
+              name: 'Curso',
+              params: {
+                id: curso.id,
+                nombre: curso.nombre,
+                seccion: curso.seccion,
+                curso: curso,
+              },
+            }"
             class="difuminado"
             active-class="activacion"
           >
-            <v-list-item-icon>
-              <v-icon color="white">fas fa-users</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="white--text letra">
-              <strong>Usuario</strong></v-list-item-title
-            >
+            <v-list-item-title class="white--text truncate letra">
+              <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <span
+                  v-bind="attrs"
+                  v-on="on"
+                ><strong>{{ curso.nombre }} - {{curso.seccion}}</strong></span>
+              </template>
+              <span>{{ curso.nombre }} - {{curso.seccion}}</span>
+            </v-tooltip>
+              <!-- <strong>{{ curso.nombre }}</strong> -->
+            </v-list-item-title >
           </v-list-item>
         </template>
-        <span><strong>Usuario</strong></span>
+        <span
+          ><strong>{{ curso.nombre }}</strong></span
+        >
       </v-tooltip>
     </v-list>
-    <!-- <template v-slot:append>
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown ? false : true"
-        class=" difuminado align-self-end"
-        style="background-color: #FF6B6B"
-        @click="unLogin"
-      >
-        <v-list-item-icon>
-          <v-icon color="white" style="font-size: 125%"
-            >fas fa-power-off</v-icon
-          >
-        </v-list-item-icon>
-        <v-list-item-title class="white--text letra"
-          ><strong>Cerrar sesion</strong></v-list-item-title
-        >
-      </v-list-item>
-    </template> -->
   </v-navigation-drawer>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import axios from "axios";
+
 export default {
   name: "Navegacion",
   data() {
     return {
       drawer: true,
       on: "",
+      cursos: [],
+      cursosAux: [],
     };
   },
   computed: {
@@ -84,13 +98,33 @@ export default {
   icons: {
     iconfont: ["mdiSvg", "mdi", "mdiSvg", "md", "fa", "fa4", "faSvg"],
   },
-  beforeMount(){
+  created() {
     this.obtenerCursos();
   },
   methods: {
-    obtenerCursos(){
-      console.log("getCursos");
-    }
+    obtenerCursos() {
+      var usuario = this.$store.getters.usuario;
+      this.cursosAux = [];
+      const url = this.$store.state.rutaDinamica +"profesor/"+usuario.id+"/cursos";
+      axios.get(url)
+        .then((result) => {
+          const response = result.data;
+          if (result.data.error === false) {
+            for (let index = 0; index < response.cursos.length; index++) {
+              const cursoAux = response.cursos[index];
+              const curso = {
+                id: cursoAux.id,
+                nombre: cursoAux.nombre,
+                seccion: cursoAux.seccion,
+              };
+              this.cursosAux[index] = curso;
+            }
+            this.cursos = this.cursosAux;
+          }
+        })
+        .catch((error) => {
+        });
+    },
   },
 };
 </script>
