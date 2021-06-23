@@ -69,7 +69,10 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="booleanCreditos = true"
+                      @click="
+                        updateSyllabus();
+                        booleanCreditos = true;
+                      "
                     >
                       <v-icon color="warning"> far fa-save </v-icon>
                     </v-btn>
@@ -129,7 +132,10 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="booleanAreaConocimiento = true"
+                      @click="
+                        updateSyllabus();
+                        booleanAreaConocimiento = true;
+                      "
                     >
                       <v-icon color="warning"> far fa-save </v-icon>
                     </v-btn>
@@ -180,7 +186,10 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="booleanSemestre = true"
+                      @click="
+                        updateSyllabus();
+                        booleanSemestre = true;
+                      "
                     >
                       <v-icon color="warning"> far fa-save </v-icon>
                     </v-btn>
@@ -219,11 +228,13 @@
           </v-card>
           <v-list>
             <v-list-item
-              v-for="(requisito, i) in syllabus.preRequisito"
+              v-for="(requisito, i) in syllabus.preRequisito.cursoIds"
               :key="i"
             >
               <v-list-item-content>
-                <v-list-item-title>{{ requisito }}</v-list-item-title>
+                <v-list-item-title>{{
+                  obtenerNombreCurso(requisito)
+                }}</v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
                 <v-tooltip bottom color="primary">
@@ -235,7 +246,12 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="cargarDatoseditarRequisito(requisito, i)"
+                      @click="
+                        cargarDatoseditarRequisito(
+                          obtenerNombreCurso(requisito),
+                          i
+                        )
+                      "
                     >
                       <v-icon color="primary"> fas fa-edit </v-icon>
                     </v-btn>
@@ -279,9 +295,6 @@
                 :disabled="booleanResponsableSyllabus"
                 :rules="[
                   (v) => !!v || 'Las áreas de conocimientos son requeridas',
-                  (v) =>
-                    /^[a-zA-Z\u00f1\u00d1 ]+$/.test(v) ||
-                    'Las áreas de conocimientos solo puede contener letras y espacios.',
                 ]"
               ></v-text-field>
               <v-spacer></v-spacer>
@@ -313,7 +326,10 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="booleanResponsableSyllabus = true"
+                      @click="
+                        updateSyllabus();
+                        booleanResponsableSyllabus = true;
+                      "
                     >
                       <v-icon color="warning"> far fa-save </v-icon>
                     </v-btn>
@@ -449,7 +465,7 @@
                       @click="
                         cargarDatosDialogFullScreen(
                           'Agregar aprendizajes',
-                          'Aprendizajes',
+                          'aprendizajes',
                           'Aprendizaje'
                         )
                       "
@@ -676,7 +692,10 @@
                       small
                       depressed
                       class="mr-2 py-2"
-                      @click="booleanMetodogia = true"
+                      @click="
+                        updatedSyllabus();
+                        booleanMetodogia = true;
+                      "
                     >
                       <v-icon color="warning"> far fa-save </v-icon>
                     </v-btn>
@@ -815,17 +834,12 @@
             v-model="form_añadirRequisitodValido"
             lazy-validation
           >
-            <v-text-field
-              color="secondary"
+            <v-select
+              v-model="selectedRequisito"
+              :items="allCursosAux"
               label="Curso requisito"
-              :rules="[
-                (v) => !!v || 'Curso requisito es requerido',
-                (v) =>
-                  /^[a-zA-Z\u00f1\u00d1 ]+$/.test(v) ||
-                  'Curso requisito solo puede contener letras y espacios.',
-              ]"
-            ></v-text-field>
-
+              :rules="[(v) => !!v || 'Curso requisito es requerido']"
+            ></v-select>
             <div class="pb-1" style="text-align: right">
               <v-btn
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
@@ -841,8 +855,7 @@
                 rounded
                 color="secondary"
                 class="ml-2"
-                :loading="cargando"
-                @click="dialogAgregarRequisito = false"
+                @click="agregarRequisito(selectedRequisito)"
               >
                 <h4 class="white--text">Agregar</h4>
               </v-btn>
@@ -929,7 +942,7 @@
             rounded
             color="secondary"
             class="ml-2"
-            @click="click()"
+            @click="eliminarRequisito"
           >
             <h4 class="white--text">Eliminar</h4>
           </v-btn>
@@ -951,7 +964,7 @@
           <v-toolbar-title>{{ tituloDialogFullScreen }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn text @click="dialog = false"> Guardar </v-btn>
+            <v-btn text @click="guardarDatosDialogFullScreen"> Guardar </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-row>
@@ -1000,7 +1013,7 @@
             rounded
             color="secondary"
             class="ml-2"
-            @click="click()"
+            @click="eliminarDatosDialogOpciones()"
           >
             <h4 class="white--text">Eliminar</h4>
           </v-btn>
@@ -1022,30 +1035,21 @@ export default {
   name: "Syllabus",
   data() {
     return {
+      selectedRequisito: "",
       syllabus: {
-        nroCreditos: 10,
-        areaConocimiento: "Ingeniería y Tecnología",
+        id: 0,
+        nroCreditos: 1,
+        areaConocimiento: "",
         semestre: 6,
-        preRequisito: ["algoritmos", "taller", "Proyecto de progra"],
-        responsableSyllabus: "INGENIERIA CIVIL EN COMPUTACION",
-        competencia: [
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-        ],
-        aprendizaje: [
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-        ],
-        unidad: [
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-        ],
-        metodologia:
-          " Clases teóricas o cátedras El propósito de este método es compartir conocimientos y activar procesos cognitivos. Se denomina como clase teórica una modalidad organizativa de la enseñanza en la que se utiliza principalmente como estrategia didáctica la exposición verbal por parte del profesor de los saberes que contempla el módulo. Aunque esta exposición se puede realizar de diversas formas y con distintos medios, la característica esencial de esta modalidad de enseñanza es su unidireccionalidad -hablar a los estudiantes- ya que tanto la selección de los saberes a exponer como la forma de hacerlo constituyen una decisión del profesor (De Miguel, 2005) Método socrático",
-        bibliografia: [
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-          "Interactuar productivamente en los diferentes contextos organizacionales, privados y públicos, donde sea aplicable la ingeniería para ofrecer soluciones innovadoras a problemáticas en este ámbito",
-        ],
+        preRequisito: {
+          cursoIds: [],
+        },
+        responsableSyllabus: "",
+        competencia: [],
+        aprendizaje: [],
+        unidad: [],
+        metodologia: "",
+        bibliografia: [],
       },
       cargando: false,
       //opciones
@@ -1060,6 +1064,7 @@ export default {
       booleanMetodogia: true,
 
       //dialogs requisitos
+      idEliminarRequisito: 0,
       dialogAgregarRequisito: false,
       form_añadirRequisitodValido: true,
       dialogEditarRequisito: false,
@@ -1112,11 +1117,11 @@ export default {
       },
       //dialog full screen
       dialog: false,
-
       tituloDialogFullScreen: "Titulo",
       tipoDialogFullScreen: "competencia",
       labelDialogFullScreen: "",
       infoDialogFullScreen: "",
+      idItemEliminar: -1,
       //dialog opciones
       dialogEliminarOpciones: false,
       tituloDialogEliminarOpciones: "",
@@ -1124,10 +1129,14 @@ export default {
       labelDialogEliminarOpciones: "",
       //allcursos
       allCursos: [],
+      allCursosAux: [],
+      //requisitos aux
+      requisitosAux: [],
     };
   },
   beforeMount() {
     this.obtenerCursos();
+    this.obtenerSyllabus();
   },
   computed: {
     getUserValido() {
@@ -1138,15 +1147,30 @@ export default {
     click() {
       console.log("Se realizo un click en el boton");
     },
+    agregarRequisito(requisito) {
+      for (let index = 0; index < this.allCursos.length; index++) {
+        const element = this.allCursos[index];
+        if (element.nombre == requisito) {
+          this.syllabus.preRequisito.cursoIds =
+            this.syllabus.preRequisito.cursoIds.length > 0
+              ? [...this.syllabus.preRequisito.cursoIds, element.id]
+              : [element.id];
+        }
+      }
+      this.selectedRequisito = "";
+      //console.log(this.syllabus.preRequisito.cursoIds);
+      this.updateSyllabus();
+      this.dialogAgregarRequisito = false;
+    },
     obtenerCursos() {
       var usuario = this.getUserValido;
-      console.log(usuario);
+      //console.log(usuario);
       const url =
         this.$store.state.rutaDinamica +
         "profesor/" +
         usuario.id +
         "/allcursos";
-      console.log(url);
+      //console.log(url);
       axios
         .get(url)
         .then((result) => {
@@ -1155,6 +1179,10 @@ export default {
             const cursos = response.cursos;
             for (let index = 0; index < cursos.length; index += 1) {
               const element = cursos[index];
+              this.allCursosAux =
+                this.allCursosAux.length > 0
+                  ? [...this.allCursosAux, element.nombre]
+                  : [element.nombre];
               const curso = {
                 id: element.id,
                 nombre: element.nombre,
@@ -1172,24 +1200,119 @@ export default {
         });
     },
 
+    obtenerNombreCurso(idCurso) {
+      var nombreCurso = " ";
+      for (let index = 0; index < this.allCursos.length; index++) {
+        const element = this.allCursos[index];
+        if (idCurso == element.id) {
+          nombreCurso = element.nombre;
+        }
+      }
+      return nombreCurso;
+    },
+
+    obtenerSyllabus() {
+      var usuario = this.getUserValido;
+      var curso = this.$route.params.id;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        curso +
+        "/syllabus";
+      axios
+        .get(url)
+        .then((result) => {
+          const response = result.data;
+          console.log(response);
+          this.syllabus.id = response.id;
+          this.syllabus.nroCreditos = response.nroCreditos;
+          this.syllabus.areaConocimiento = response.areaconocimiento;
+          this.syllabus.semestre = response.semestre;
+          //this.syllabus.preRequisito.cursoIds = response.preRequisito.cursoIds;
+          this.syllabus.preRequisito.cursoIds =
+            response.preRequisito[0].cursoIds;
+          this.syllabus.responsableSyllabus = response.responsableSyllabus;
+          this.syllabus.competencia = response.competencia;
+          this.syllabus.aprendizaje = response.aprendizaje;
+          this.syllabus.unidad = response.unidad;
+          this.syllabus.metodologia = response.metodologia;
+          this.syllabus.bibliografia = response.bibliografia;
+        })
+        .catch((error) => {
+          console.log("error");
+        });
+    },
+
+    updateSyllabus() {
+      var usuario = this.getUserValido;
+      var curso = this.$route.params.id;
+      const url =
+        this.$store.state.rutaDinamica +
+        "profesor/" +
+        usuario.id +
+        "/curso/" +
+        curso +
+        "/syllabus/" +
+        this.syllabus.id;
+      const request = {
+        id: this.syllabus.id,
+        nroCreditos: this.syllabus.nroCreditos,
+        areaconocimiento: this.syllabus.areaConocimiento,
+        semestre: this.syllabus.semestre,
+        preRequisito: [
+          {
+            cursoIds: this.syllabus.preRequisito.cursoIds,
+          },
+        ],
+        responsableSyllabus: this.syllabus.responsableSyllabus,
+        competencia: this.syllabus.competencia,
+        aprendizaje: this.syllabus.aprendizaje,
+        unidad: this.syllabus.unidad,
+        metodologia: this.syllabus.metodologia,
+        bibliografia: this.syllabus.bibliografia,
+      };
+      console.log("data");
+      console.log(request);
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+          const response = result.data;
+          console.log(response);
+          this.syllabus.id = response.id;
+          this.syllabus.nroCreditos = response.nroCreditos;
+          this.syllabus.areaConocimiento = response.areaconocimiento;
+          this.syllabus.semestre = response.semestre;
+          this.syllabus.preRequisito.cursoIds =
+            response.preRequisito[0].cursoIds;
+          this.syllabus.responsableSyllabus = response.responsableSyllabus;
+          this.syllabus.competencia = response.competencia;
+          this.syllabus.aprendizaje = response.aprendizaje;
+          this.syllabus.unidad = response.unidad;
+          this.syllabus.metodologia = response.metodologia;
+          this.syllabus.bibliografia = response.bibliografia;
+          console.log(this.syllabus.preRequisito.cursoIds);
+        })
+        .catch((error) => {
+          console.log("error");
+        });
+    },
+
     cargarDatoseditarRequisito(r, i) {
       this.editarRequisito.id = i;
       this.editarRequisito.nombre = r;
       this.dialogEditarRequisito = true;
     },
     cargarDatosEliminarRequisito(i) {
-      const idEliminarRequisito = i;
+      this.idEliminarRequisito = i;
       this.dialogEliminarRequisito = true;
     },
     cargarDatosDialogFullScreen(titulo, tipo, label) {
       this.tituloDialogFullScreen = titulo;
       this.tipoDialogFullScreen = tipo;
       this.labelDialogFullScreen = label;
-      if (this.tipoDialogFullScreen == "competencias") {
-      } else if (this.tipoDialogFullScreen == "aprendizajes") {
-      } else if (this.tipoDialogFullScreen == "unidades") {
-      } else if (this.tipoDialogFullScreen == "bibliografia") {
-      }
+      this.infoDialogFullScreen = "";
       this.dialog = true;
     },
     cargarEditarDatosDialogFullScreen(titulo, tipo, label, item, idItem) {
@@ -1212,12 +1335,107 @@ export default {
       this.tituloDialogEliminarOpciones = titulo;
       this.tipoDialogEliminarOpciones = tipo;
       this.labelDialogEliminarOpciones = label;
-      if (this.tipoDialogEliminarOpciones == "competencias") {
-      } else if (this.tipoDialogEliminarOpciones == "aprendizajes") {
-      } else if (this.tipoDialogEliminarOpciones == "unidades") {
-      } else if (this.tipoDialogEliminarOpciones == "bibliografia") {
-      }
+      this.idItemEliminar = idItemEliminar;
       this.dialogEliminarOpciones = true;
+    },
+
+    guardarDatosDialogFullScreen() {
+      if (this.tipoDialogFullScreen == "competencias") {
+        this.syllabus.competencia =
+          this.syllabus.competencia.length > 0
+            ? [...this.syllabus.competencia, this.infoDialogFullScreen]
+            : [this.infoDialogFullScreen];
+      } else if (this.tipoDialogFullScreen == "aprendizajes") {
+        this.syllabus.aprendizaje =
+          this.syllabus.competencia.length > 0
+            ? [...this.syllabus.aprendizaje, this.infoDialogFullScreen]
+            : [this.infoDialogFullScreen];
+      } else if (this.tipoDialogFullScreen == "unidades") {
+        this.syllabus.unidad =
+          this.syllabus.competencia.length > 0
+            ? [...this.syllabus.unidad, this.infoDialogFullScreen]
+            : [this.infoDialogFullScreen];
+      } else if (this.tipoDialogFullScreen == "bibliografia") {
+        this.syllabus.bibliografia =
+          this.syllabus.competencia.length > 0
+            ? [...this.syllabus.bibliografia, this.infoDialogFullScreen]
+            : [this.infoDialogFullScreen];
+      }
+      this.updateSyllabus();
+      this.dialog = false;
+    },
+
+    eliminarDatosDialogOpciones() {
+      var auxArrayEliminar = [];
+      if (this.tipoDialogEliminarOpciones == "competencias") {
+        for (let index = 0; index < this.syllabus.competencia.length; index++) {
+          const element = this.syllabus.competencia[index];
+          if (index != this.idItemEliminar) {
+            auxArrayEliminar =
+              auxArrayEliminar.length > 0
+                ? [...auxArrayEliminar, element]
+                : [element];
+          }
+        }
+        this.syllabus.competencia = auxArrayEliminar;
+      } else if (this.tipoDialogEliminarOpciones == "aprendizajes") {
+        for (let index = 0; index < this.syllabus.aprendizaje.length; index++) {
+          const element = this.syllabus.aprendizaje[index];
+          if (index != this.idItemEliminar) {
+            auxArrayEliminar =
+              auxArrayEliminar.length > 0
+                ? [...auxArrayEliminar, element]
+                : [element];
+          }
+        }
+        this.syllabus.aprendizaje = auxArrayEliminar;
+      } else if (this.tipoDialogEliminarOpciones == "unidades") {
+        for (let index = 0; index < this.syllabus.unidad.length; index++) {
+          const element = this.syllabus.unidad[index];
+          if (index != this.idItemEliminar) {
+            auxArrayEliminar =
+              auxArrayEliminar.length > 0
+                ? [...auxArrayEliminar, element]
+                : [element];
+          }
+        }
+        this.syllabus.unidad = auxArrayEliminar;
+      } else if (this.tipoDialogEliminarOpciones == "bibliografia") {
+        for (
+          let index = 0;
+          index < this.syllabus.bibliografia.length;
+          index++
+        ) {
+          const element = this.syllabus.bibliografia[index];
+          if (index != this.idItemEliminar) {
+            auxArrayEliminar =
+              auxArrayEliminar.length > 0
+                ? [...auxArrayEliminar, element]
+                : [element];
+          }
+        }
+        this.syllabus.bibliografia = auxArrayEliminar;
+      }
+      this.updateSyllabus();
+      this.dialogEliminarOpciones = false;
+    },
+
+    eliminarRequisito() {
+      var auxCursosIds = [];
+      for (
+        let index = 0;
+        index < this.syllabus.preRequisito.cursoIds.length;
+        index++
+      ) {
+        const element = this.syllabus.preRequisito.cursoIds[index];
+        if (element != this.idEliminarRequisito) {
+          auxCursosIds =
+            auxCursosIds.length > 0 ? [...auxCursosIds, element] : [element];
+        }
+      }
+      this.syllabus.preRequisito.cursoIds = auxCursosIds;
+      this.dialogEliminarRequisito = false;
+      this.updateSyllabus();
     },
   },
 };
