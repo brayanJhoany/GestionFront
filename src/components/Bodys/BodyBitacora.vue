@@ -27,7 +27,7 @@
                         color="accent"
                         @click="
                           dialogAgregarObservacion = true;
-                          form_añadirObservacionValido = false;
+              
                         "
                       >
                         <v-icon color="white">fas fa-plus</v-icon>
@@ -138,7 +138,6 @@
           <v-form
             ref="form_añadirObservacion"
             style="margin: 0; padding: 0"
-            v-model="form_añadirObservacionValido"
             lazy-validation
           >
             <v-text-field
@@ -195,7 +194,6 @@
                 <h4 class="white--text">Cancelar</h4>
               </v-btn>
               <v-btn
-                :disabled="!form_añadirObservacionValido"
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
                 color="secondary"
@@ -261,7 +259,6 @@
           <v-form
             ref="form_actualizarObservacion"
             style="margin: 0; padding: 0"
-            v-model="form_actualizarObservacionValido"
             lazy-validation
           >
             <v-text-field
@@ -318,7 +315,6 @@
                 <h4 class="white--text">Cancelar</h4>
               </v-btn>
               <v-btn
-                :disabled="!form_actualizarObservacionValido"
                 :small="$vuetify.breakpoint.smAndDown ? true : false"
                 rounded
                 color="secondary"
@@ -348,10 +344,11 @@ export default {
   },
   data() {
     return {
+      //dialog
       dialogAgregarObservacion: false,
       dialogModificarObservacion: false,
       dialogEliminarObservacion: false,
-
+      //alertas
       show_alerta: false, // eug. para el v-alert (mostrar/ocultar)
       alertColor: "green", // eug. green -> para success, red -> para error
       alertType: "success", // eug. ejemplo 'success', 'error', ...
@@ -359,20 +356,8 @@ export default {
 
       mostrar: false,
       cargando: false,
-      validacionObservaciones: false,
-      validacionObservacionesFalse: true,
       observaciones: [],
       auxObservaciones: [],
-      //fechas
-      rules: [
-        (value) => !!value || "Requerido",
-        (value) =>
-          value <= new Date().getFullYear() ||
-          "El año no puede ser mayor al actual",
-        (value) => value >= 1981 || "El año no puede ser menor a 1981",
-      ],
-      // unAnhoVariable: true,
-      // rangoAnhosVariable: true,
       activePicker: null,
       date: null,
       fechaAddObs: new Date().toISOString().substr(0, 10),
@@ -380,7 +365,6 @@ export default {
       menu: false,
       menu2: false,
       landscape: false,
-      // datos para
       observacion: {
         titulo: "",
         descripcion: "",
@@ -393,10 +377,14 @@ export default {
         titulo: "",
         descripcion: "",
       },
-
-      form_añadirObservacionValido: true,
-      form_actualizarObservacionValido: true,
-
+        //Reglas de validacion
+        rules: [
+          (value) => !!value || "Requerido",
+          (value) =>
+            value <= new Date().getFullYear() ||
+            "El año no puede ser mayor al actual",
+          (value) => value >= 1981 || "El año no puede ser menor a 1981",
+        ],
       reglas_Nombre: [
         (value) => !!value || "Requerido",
         (v) => /^[a-zA-ZÀ-ÿ\u00f1\u00d1 ]+$/.test(v) || "Nombre no Válido.",
@@ -411,9 +399,6 @@ export default {
     };
   },
   computed: {
-    target() {
-      return "#hola";
-    },
     options() {
       return {
         duration: 300,
@@ -430,44 +415,38 @@ export default {
       val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
     },
   },
-
+  /**
+   * Metodos llamados antes de cargar la pagina web.
+   */
   beforeMount() {
     this.obtenerObservaciones();
   },
 
   methods: {
+    /**
+     * Resetea las reglas de validacion del formulario 
+     * añadir observación
+     */
     resetAddObservation() {
       this.$refs.form_añadirObservacion.resetValidation();
     },
+    /**
+     * Resetea las reglas de validacion del formulario 
+     * actualizar observación
+     */
     resetUpdateObservation() {
       this.$refs.form_actualizarObservacion.resetValidation();
     },
+    /**
+     * Registra la fecha de la organizacion
+     */
     save(date) {
       this.$refs.menu.save(date);
     },
-    volver() {
-      const auxruta = this.enrutamiento.split("");
-
-      if (auxruta[0] === 1 || auxruta[0] === 2) {
-        if (this.$store.state.usuario.usuario.rol == "admin") {
-          this.$router.push({
-            path: `/administrador/semestres/${this.enrutamiento}`,
-          });
-        } else {
-          this.$router.push({
-            path: `/secretariaEscuela/semestres/${this.enrutamiento}`,
-          });
-        }
-      } else if (this.$store.state.usuario.usuario.rol === "admin") {
-        this.$router.push({ path: `/administrador/${this.enrutamiento}` });
-      } else if (
-        this.$store.state.usuario.usuario.rol === "secretaria de escuela"
-      ) {
-        this.$router.push({ path: `/secretariaEscuela/${this.enrutamiento}` });
-      } else if (this.$store.state.usuario.usuario.rol === "profesor") {
-        this.$router.push({ path: `/profesor/${this.enrutamiento}` });
-      }
-    },
+    /**
+     * Obtenemos todas las observaciones registradas en la base de datos,
+     * para esto llamamos a la API.
+     */
     obtenerObservaciones() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -527,6 +506,9 @@ export default {
           console.log("error");
         });
     },
+    /**
+     * resetea la añerta
+     */
     resetAgregarObservacion() {
       this.my_custom_alert(
         true,
@@ -541,16 +523,14 @@ export default {
       this.observacion.descripcion = "";
       this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
+    /**
+     * Agrega una nueva observación, para esto hacemos una llamada
+     * a la API
+     */
     agregarObservacion() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url =
-        this.$store.state.rutaDinamica +
-        "profesor/" +
-        usuario.id +
-        "/curso/" +
-        cursoId +
-        "/bitacora/1/observacion";
+      const url =  this.$store.state.rutaDinamica + "profesor/" + usuario.id + "/curso/" + cursoId + "/bitacora/1/observacion";
       const request = {
         titulo: this.observacion.titulo,
         descripcion: this.observacion.descripcion,
@@ -588,6 +568,10 @@ export default {
           );
         });
     },
+    /**
+     * Reseteamos las variables utilizadas para eliminar una 
+     * observación
+     */
     resetEliminarObservacion() {
       this.dialogEliminarObservacion = false;
       this.eliminarObservacion.id = "";
@@ -602,6 +586,9 @@ export default {
         1500
       );
     },
+    /**
+     * Elimina una observacion, para esto llamamos a la API
+     */
     EliminarObservacion() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
@@ -636,6 +623,10 @@ export default {
           );
         });
     },
+    /**
+     * Registra la informacion de la observacion a eliminar en una
+     * variable auxiliar.
+     */
     cargarDatosEliminarObservacion(observacion) {
       this.dialogEliminarObservacion = true;
       this.eliminarObservacion = {
@@ -648,17 +639,13 @@ export default {
       this.eliminarObservacion.fecha = observacion.fecha;
       this.eliminarObservacion.descripcion = observacion.descripcion;
     },
+    /**
+     * Actualiza la información de una observación.
+     */
     updateObservacion() {
       var usuario = this.getUserValido;
       let cursoId = this.$route.params.id;
-      const url =
-        this.$store.state.rutaDinamica +
-        "profesor/" +
-        usuario.id +
-        "/curso/" +
-        cursoId +
-        "/bitacora/1/observacion/" +
-        this.modificarObservacion.id;
+      const url = this.$store.state.rutaDinamica + "profesor/" +  usuario.id +  "/curso/" + cursoId + "/bitacora/1/observacion/" + this.modificarObservacion.id;
       const request = {
         titulo: this.modificarObservacion.titulo,
         descripcion: this.modificarObservacion.descripcion,
@@ -687,6 +674,10 @@ export default {
           );
         });
     },
+    /**
+     * Registra los datos de la observación a modificar en una varaible auxiliar,
+     * para realizar su modificación
+     */
     cargarDatosModificarObservacion(observacion) {
       this.dialogModificarObservacion = true;
       this.modificarObservacion = { id: "", titulo: "", descripcion: "" };
@@ -695,8 +686,10 @@ export default {
       this.modificarObservacion.fecha = observacion.fecha;
       this.modificarObservacion.descripcion = observacion.descripcion;
     },
+    /**
+     * Resetea las varaibles utilizadas para la modificacion de una observación
+     */
     resetModificarObservacion() {
-      //this.$router.go(); //sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
       this.my_custom_alert(
         true,
         "blue",
@@ -712,6 +705,9 @@ export default {
       this.modificarObservacion.descripcion = "";
       this.fechaAddObs = new Date().toISOString().substr(0, 10);
     },
+    /**
+     * Permite la creacion de alertas modificables.
+     */
     my_custom_alert(
       show_alerta,
       alertColor,
