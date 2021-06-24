@@ -224,7 +224,21 @@
                 :items="body_horario_consulta.horarios"
                 :items-per-page="5"
                 class="elevation-1"
-              ></v-data-table>              
+              >
+                <template v-slot:item="row">
+                  <tr>
+                    <td>{{row.item.dia}}</td>
+                    <td>{{row.item.hora_inicio}}</td>
+                    <td>{{row.item.hora_termino}}</td>
+                    <td>
+                        <v-btn v-on="on" color="white" fab small depressed class="mr-2 py-2"
+                          @click="eliminarHorarioConsultas(row.index)">
+                          <v-icon color="warning"> fas fa-trash-alt </v-icon>
+                        </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>              
             </v-col>
             <v-col>
               <v-data-table
@@ -232,7 +246,21 @@
                 :items="body_horario_clase.horarios"
                 :items-per-page="5"
                 class="elevation-1"
-              ></v-data-table>
+              >
+                <template v-slot:item="row">
+                  <tr>
+                    <td>{{row.item.dia}}</td>
+                    <td>{{row.item.hora_inicio}}</td>
+                    <td>{{row.item.hora_termino}}</td>
+                    <td>
+                        <v-btn v-on="on" color="white" fab small depressed class="mr-2 py-2"
+                          @click="eliminarHorarioClases(row.item)">
+                          <v-icon color="warning"> fas fa-trash-alt </v-icon>
+                        </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
             </v-col>
           </v-row>
         </section>
@@ -271,7 +299,21 @@
               </div>
             </v-card-title>
           </v-card>
-          <div class="mb-6"></div>
+          <div class="mb-6">
+            <v-row>
+                <v-col>
+                  <v-alert
+                    v-model="show_alerta"
+                    transition="scale-transition"
+                    v-bind:color="alertColor"
+                    v-bind:type="alertType"
+                    style="width: 100%; margin-top: 20px"
+                    >{{ alert_mensaje }}</v-alert
+                  >
+                  <!-- eug. -->
+                </v-col>
+              </v-row>
+          </div>
           <v-col
             v-for="(detalle, i) in detallesPlan"
             :key="i"
@@ -497,7 +539,7 @@
         </v-card-title>
         <v-container class="px-5 mt-5">
           <v-form
-            ref="form_añadirActividad"
+            ref="form_editarActividad"
             style="margin: 0; padding: 0"
             v-model="form_editarActividadValido"
             lazy-validation
@@ -644,12 +686,14 @@ export default {
         {text: "Dia", align: "start", value: "dia", sortable: false},
         {text: "Inicio", value: "hora_inicio", sortable: false},
         {text: "Término", value: "hora_termino", sortable: false},
+        {text: "Acciones", value: "acciones", sortable: false}
       ],
       headers_horario_clase: [
 
         {text: "Dia", align: "start", value: "dia", sortable: false},
         {text: "Inicio", value: "hora_inicio", sortable: false},
         {text: "Término", value: "hora_termino", sortable: false},
+        {text: "Acciones", value: "acciones", sortable: false}
       ],
       body_horario_consulta: {
         horarios:[
@@ -663,11 +707,19 @@ export default {
         ]
       },
 
+      //Controles para los dialogs de agregar, editar y eliminar actividad.
       dialogAgregarActividad: false,
       form_añadirActividadValido: false,
       dialogEditarActividad: false,
       form_editarActividadValido: false,
       dialogEliminarActividad: false,
+
+      //Configuraciones para las alertas
+      show_alerta: false,
+      alertColor: "green",
+      alertType: "success",
+      alert_mensaje: "Mensaje de la alerta",
+
       activePicker: null,
       date: null,
       fechaAddObs: new Date().toISOString().substr(0, 10),
@@ -748,7 +800,9 @@ export default {
       return this.$store.getters.usuario;
     },
   },
-
+  /**
+   * En esta parte se indican los metodos que se llamaran al cargar la pagina.
+   */
   beforeMount() {
     this.obtenerPlanClases();
   },
@@ -771,6 +825,13 @@ export default {
         cursoId +
         "/plan-de-clases";
       this.cargando = true;
+
+      /**
+       * Este codigo reinicia los arrays que contienen los horarios de atencion y clases.
+       * Esto se realiza para evitar que queden datos previos al volver a actualizar la vista.
+       */
+      this.body_horario_clase.horarios = [];
+      this.body_horario_consulta.horarios = [];
 
       this.detallesPlan = [];
       this.auxDetallesPlan = [];
@@ -816,7 +877,6 @@ export default {
                 hora_termino: this.plan.horarioConsultas[index].hora_termino
               }
 
-              console.log(horario);
               this.body_horario_consulta.horarios.push(horario);
             }
 
@@ -892,6 +952,13 @@ export default {
           this.resetFormularioAgregar();
           const response = result.data;
           this.obtenerPlanClases();
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Actividad registrada exitosamente!",
+            3500
+          );
         })
         .catch((error) => {});
     },
@@ -902,6 +969,13 @@ export default {
      * aparecen vacios.
      */
     resetFormularioAgregar() {
+      this.my_custom_alert(
+        true,
+        "blue",
+        "info",
+        "¡La acción fue anulada!",
+        2500
+      );
       this.dialogAgregarActividad = false;
       this.$refs.form_añadirActividad.resetValidation();
       this.detalle.actividad = "";
@@ -917,6 +991,13 @@ export default {
      * aparecen vacios.
      */
     resetFormularioEditar() {
+      this.my_custom_alert(
+        true,
+        "blue",
+        "info",
+        "¡La acción fue anulada!",
+        2500
+      );
       this.dialogEditarActividad = false;
       this.$refs.form_editarActividad.resetValidation();
       this.detalleEditar.id = "";
@@ -934,7 +1015,7 @@ export default {
       this.detalleEditar.id = detalle.id;
       this.detalleEditar.fecha = detalle.fecha;
       this.fechaUpObs = detalle.fecha;
-      this.detalleEditar.semana = detalle.semana;
+      this.detalleEditar.semana = parseInt(detalle.semana);
       this.detalleEditar.actividad = detalle.actividad;
       this.detalleEditar.saber_tema = detalle.saber_tema;
       this.detalleEditar.observacion = detalle.observacion;
@@ -974,6 +1055,13 @@ export default {
         .then((result) => {
           this.resetFormularioEditar();
           this.obtenerPlanClases();
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Actividad editada exitosamente!",
+            3500
+          );
         })
         .catch((error) => {});
     },
@@ -1013,6 +1101,13 @@ export default {
         .then((result) => {
           this.dialogEliminarActividad = false;
           this.obtenerPlanClases();
+          this.my_custom_alert(
+            true,
+            "green",
+            "success",
+            "¡Actividad eliminada exitosamente!",
+            3500
+          );
         })
         .catch((error) => {});
     },
@@ -1082,6 +1177,8 @@ export default {
 
       this.body_horario_clase.horarios.push(nuevo_horario);
 
+      //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
+      //y se envian a la base de datos.
       const request = {
          horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
          horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
@@ -1093,6 +1190,91 @@ export default {
         })
         .catch((error) => {});
 
+    },
+
+    /**
+     * Permite la creacion de alertas modificables.
+     */
+    my_custom_alert(
+      show_alerta,
+      alertColor,
+      alertType,
+      alert_mensaje,
+      alert_timeout
+    ) {
+      this.show_alerta = show_alerta; // true | false
+      this.alertColor = alertColor; // 'green', 'red', etc...
+      this.alertType = alertType; // 'success', 'error', 'info', etc...
+      this.alert_mensaje = alert_mensaje; // 'Se realizó la acción correctamente', etc...
+      setTimeout(() => {
+        this.show_alerta = false;
+      }, alert_timeout);
+    },
+    
+    /**
+     * Permite eliminar un horario de consultas del plan de clases.
+     */
+    eliminarHorarioConsultas(item) {
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+
+      this.body_horario_consulta.horarios.splice(item, 1);
+
+      //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
+      //y se envian a la base de datos.
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
+    },
+
+    /**
+     * Permite eliminar un horario de clases del plan de clases.
+     */
+    eliminarHorarioClases(item) {
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+
+      this.body_horario_clase.horarios.splice(item, 1);
+
+      //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
+      //y se envian a la base de datos.
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
     }
   },
 };
