@@ -693,7 +693,7 @@
                       depressed
                       class="mr-2 py-2"
                       @click="
-                        updatedSyllabus();
+                        updateSyllabus();
                         booleanMetodogia = true;
                       "
                     >
