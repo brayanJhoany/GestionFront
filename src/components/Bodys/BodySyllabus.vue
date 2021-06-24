@@ -1036,6 +1036,7 @@ export default {
   data() {
     return {
       selectedRequisito: "",
+      //la variable syllabus en la más importante de esta vista, dado que es la encagada de almacenar la información que se mostrará en todos los apartados de la vista.
       syllabus: {
         id: 0,
         nroCreditos: 1,
@@ -1134,11 +1135,17 @@ export default {
       requisitosAux: [],
     };
   },
+  /**
+   * utilizando el ciclo de vida de vue, se ejecuta antes de que la vista se monte las funciones obtenerCursos y obtenerSyllabus
+   */
   beforeMount() {
     this.obtenerCursos();
     this.obtenerSyllabus();
   },
   computed: {
+    /**
+     * Método computado que proviene de VUEX encargado de obtener el usuario desde la store
+     */
     getUserValido() {
       return this.$store.getters.usuario;
     },
@@ -1147,6 +1154,10 @@ export default {
     click() {
       console.log("Se realizo un click en el boton");
     },
+    /**
+     * Método encargado de agregar un nuevo requisito en el la variable syllabus, además de direccionar al método updateSyllabus que se encargará de enviar esa nueva información
+     * al endPoint que corresponde
+     */
     agregarRequisito(requisito) {
       for (let index = 0; index < this.allCursos.length; index++) {
         const element = this.allCursos[index];
@@ -1162,6 +1173,9 @@ export default {
       this.updateSyllabus();
       this.dialogAgregarRequisito = false;
     },
+    /**
+     * Metodo encargado de obtener todos los cursos  y almacernalos en la variables allcursos.
+     */
     obtenerCursos() {
       var usuario = this.getUserValido;
       //console.log(usuario);
@@ -1200,6 +1214,9 @@ export default {
         });
     },
 
+    /**
+     * Método encargado de retornar el nombre de un curso dado la id de este.
+     */
     obtenerNombreCurso(idCurso) {
       var nombreCurso = " ";
       for (let index = 0; index < this.allCursos.length; index++) {
@@ -1211,6 +1228,9 @@ export default {
       return nombreCurso;
     },
 
+    /**
+     * Método encargado de obtener toda la información del syllabus en la base de datos y alamacenarlos en la variable local de syllabus, para poder visaulizarla.
+     */
     obtenerSyllabus() {
       var usuario = this.getUserValido;
       var curso = this.$route.params.id;
@@ -1245,6 +1265,9 @@ export default {
         });
     },
 
+    /**
+     * Método encargado de actualizar la información del syllabus mediante el endpoint correspondiente, y actualizar la información en la vista.
+     */
     updateSyllabus() {
       var usuario = this.getUserValido;
       var curso = this.$route.params.id;
@@ -1299,15 +1322,26 @@ export default {
         });
     },
 
+    /**
+     * Método encargado en cargar la información del requisito que se quiere editar.
+     */
     cargarDatoseditarRequisito(r, i) {
       this.editarRequisito.id = i;
       this.editarRequisito.nombre = r;
       this.dialogEditarRequisito = true;
     },
+
+    /**
+     * Método encargado de cargar los datos eliminados del requisito que se quiere eliminar.
+     */
     cargarDatosEliminarRequisito(i) {
       this.idEliminarRequisito = i;
       this.dialogEliminarRequisito = true;
     },
+
+    /**
+     * Método encargado de cargar los datos según la opción que corresponda en el dialog full screen de la aplicación.
+     */
     cargarDatosDialogFullScreen(titulo, tipo, label) {
       this.tituloDialogFullScreen = titulo;
       this.tipoDialogFullScreen = tipo;
@@ -1315,6 +1349,10 @@ export default {
       this.infoDialogFullScreen = "";
       this.dialog = true;
     },
+
+    /**
+     * Método encargado de cargar los datos del elemento que se quiera editar según la opción en el dialog full screen de la aplicación.
+     */
     cargarEditarDatosDialogFullScreen(titulo, tipo, label, item, idItem) {
       this.tituloDialogFullScreen = titulo;
       this.tipoDialogFullScreen = tipo;
@@ -1331,6 +1369,10 @@ export default {
       }
       this.dialog = true;
     },
+
+    /**
+     * Método encargado de cargar los datos del elemento que se quiera eliminar según la opción.
+     */
     cargarEliminarDialogOpciones(titulo, tipo, label, item, idItemEliminar) {
       this.tituloDialogEliminarOpciones = titulo;
       this.tipoDialogEliminarOpciones = tipo;
@@ -1339,6 +1381,10 @@ export default {
       this.dialogEliminarOpciones = true;
     },
 
+    /**
+     * Método encargado de guardar la información que se encuentra en el dialog full screen, además de direccionar al método updateSyllabus que se encargará de enviar esa nueva información
+     * al endPoint que corresponde
+     */
     guardarDatosDialogFullScreen() {
       if (this.tipoDialogFullScreen == "competencias") {
         this.syllabus.competencia =
@@ -1365,6 +1411,10 @@ export default {
       this.dialog = false;
     },
 
+    /**
+     * Método encargado de eliminar los datos del elemento que se quiera eliminar según la opción en la variable local syllabus, además de direccionar al método updateSyllabus que se encargará de enviar esa nueva información
+     * al endPoint que corresponde.
+     */
     eliminarDatosDialogOpciones() {
       var auxArrayEliminar = [];
       if (this.tipoDialogEliminarOpciones == "competencias") {
@@ -1420,6 +1470,10 @@ export default {
       this.dialogEliminarOpciones = false;
     },
 
+    /**
+     * Método encargado de eliminar el requisito que se desea eliminar en la variable local syllabus, además de direccionar al método updateSyllabus que se encargará de enviar esa nueva información
+     * al endPoint que corresponde.
+     */
     eliminarRequisito() {
       var auxCursosIds = [];
       for (

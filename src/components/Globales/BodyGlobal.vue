@@ -76,6 +76,9 @@ export default {
   },
   props: { curso: Array },
   methods: {
+    /**
+     * Método encargado de redireccionar a la diferentes vistas de cada curso asociado
+     */
     redireccion(accion) {
       if (accion === "Bitacora") {
         this.$router.push({
