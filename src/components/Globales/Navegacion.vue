@@ -58,16 +58,17 @@
           >
             <v-list-item-title class="white--text truncate letra">
               <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <span
-                  v-bind="attrs"
-                  v-on="on"
-                ><strong>{{ curso.nombre }} - {{curso.seccion}}</strong></span>
-              </template>
-              <span>{{ curso.nombre }} - {{curso.seccion}}</span>
-            </v-tooltip>
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on"
+                    ><strong
+                      >{{ curso.nombre }} - {{ curso.seccion }}</strong
+                    ></span
+                  >
+                </template>
+                <span>{{ curso.nombre }} - {{ curso.seccion }}</span>
+              </v-tooltip>
               <!-- <strong>{{ curso.nombre }}</strong> -->
-            </v-list-item-title >
+            </v-list-item-title>
           </v-list-item>
         </template>
         <span
@@ -88,25 +89,34 @@ export default {
     return {
       drawer: true,
       on: "",
-      cursos: [],
-      cursosAux: [],
+      cursos: [], //variable encargada de mostrar los cursos en la vista.
+      cursosAux: [], //auxiliar de la variable cursos
     };
   },
+
   computed: {
+    //Método computado de VUEX encagado de funcionar globalmente la interación de la navegación lateral
     ...mapState(["drawers"]),
   },
   icons: {
     iconfont: ["mdiSvg", "mdi", "mdiSvg", "md", "fa", "fa4", "faSvg"],
   },
   created() {
+    //al momento de crear la vista asociada, se obtienen los cursos asociados.
     this.obtenerCursos();
   },
   methods: {
+    /**
+     * Método encargado de obtener todos cursos asociado al usuario, y almacernalos en la variables cursos.
+     * La variable curso es la encargada de representar la lista de cursos del profesor en la navegación lateral.
+     */
     obtenerCursos() {
       var usuario = this.$store.getters.usuario;
       this.cursosAux = [];
-      const url = this.$store.state.rutaDinamica +"profesor/"+usuario.id+"/cursos";
-      axios.get(url)
+      const url =
+        this.$store.state.rutaDinamica + "profesor/" + usuario.id + "/cursos";
+      axios
+        .get(url)
         .then((result) => {
           const response = result.data;
           if (result.data.error === false) {
@@ -123,6 +133,7 @@ export default {
           }
         })
         .catch((error) => {
+          console.log("error");
         });
     },
   },
