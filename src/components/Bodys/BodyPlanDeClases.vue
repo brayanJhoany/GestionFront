@@ -224,7 +224,21 @@
                 :items="body_horario_consulta.horarios"
                 :items-per-page="5"
                 class="elevation-1"
-              ></v-data-table>              
+              >
+                <template v-slot:item="row">
+                  <tr>
+                    <td>{{row.item.dia}}</td>
+                    <td>{{row.item.hora_inicio}}</td>
+                    <td>{{row.item.hora_termino}}</td>
+                    <td>
+                        <v-btn v-on="on" color="white" fab small depressed class="mr-2 py-2"
+                          @click="eliminarHorarioConsultas(row.index)">
+                          <v-icon color="warning"> fas fa-trash-alt </v-icon>
+                        </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>              
             </v-col>
             <v-col>
               <v-data-table
@@ -232,7 +246,21 @@
                 :items="body_horario_clase.horarios"
                 :items-per-page="5"
                 class="elevation-1"
-              ></v-data-table>
+              >
+                <template v-slot:item="row">
+                  <tr>
+                    <td>{{row.item.dia}}</td>
+                    <td>{{row.item.hora_inicio}}</td>
+                    <td>{{row.item.hora_termino}}</td>
+                    <td>
+                        <v-btn v-on="on" color="white" fab small depressed class="mr-2 py-2"
+                          @click="eliminarHorarioClases(row.item)">
+                          <v-icon color="warning"> fas fa-trash-alt </v-icon>
+                        </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
             </v-col>
           </v-row>
         </section>
@@ -658,12 +686,14 @@ export default {
         {text: "Dia", align: "start", value: "dia", sortable: false},
         {text: "Inicio", value: "hora_inicio", sortable: false},
         {text: "Término", value: "hora_termino", sortable: false},
+        {text: "Acciones", value: "acciones", sortable: false}
       ],
       headers_horario_clase: [
 
         {text: "Dia", align: "start", value: "dia", sortable: false},
         {text: "Inicio", value: "hora_inicio", sortable: false},
         {text: "Término", value: "hora_termino", sortable: false},
+        {text: "Acciones", value: "acciones", sortable: false}
       ],
       body_horario_consulta: {
         horarios:[
@@ -847,7 +877,6 @@ export default {
                 hora_termino: this.plan.horarioConsultas[index].hora_termino
               }
 
-              console.log(horario);
               this.body_horario_consulta.horarios.push(horario);
             }
 
@@ -986,7 +1015,7 @@ export default {
       this.detalleEditar.id = detalle.id;
       this.detalleEditar.fecha = detalle.fecha;
       this.fechaUpObs = detalle.fecha;
-      this.detalleEditar.semana = detalle.semana;
+      this.detalleEditar.semana = parseInt(detalle.semana);
       this.detalleEditar.actividad = detalle.actividad;
       this.detalleEditar.saber_tema = detalle.saber_tema;
       this.detalleEditar.observacion = detalle.observacion;
@@ -1181,6 +1210,72 @@ export default {
         this.show_alerta = false;
       }, alert_timeout);
     },
+    
+    /**
+     * Permite eliminar un horario de consultas del plan de clases.
+     */
+    eliminarHorarioConsultas(item) {
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+
+      this.body_horario_consulta.horarios.splice(item, 1);
+
+      //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
+      //y se envian a la base de datos.
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
+    },
+
+    /**
+     * Permite eliminar un horario de clases del plan de clases.
+     */
+    eliminarHorarioClases(item) {
+      var usuario = this.getUserValido;
+      let cursoId = this.$route.params.id;
+      var idPlan = this.plan.id;
+
+      const url =
+      this.$store.state.rutaDinamica +
+      "profesor/" +
+      usuario.id +
+      "/curso/" +
+      cursoId +
+      "/plan-de-clases/" +
+      idPlan;
+
+      this.body_horario_consulta.horarios.splice(item, 1);
+
+      //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
+      //y se envian a la base de datos.
+      const request = {
+         horarioDeConsulta: JSON.parse(JSON.stringify(this.body_horario_consulta)),
+         horarioDeClase: JSON.parse(JSON.stringify(this.body_horario_clase))
+      }
+
+      axios
+        .put(url, request, this.$store.state.config)
+        .then((result) => {
+        })
+        .catch((error) => {});
+    }
   },
 };
 </script>
