@@ -1282,7 +1282,7 @@ export default {
       const request = {
         id: this.syllabus.id,
         nroCreditos: this.syllabus.nroCreditos,
-        areaconocimiento: this.syllabus.areaConocimiento,
+        areaConocimiento: this.syllabus.areaConocimiento,
         semestre: this.syllabus.semestre,
         preRequisito: [
           {
@@ -1296,8 +1296,8 @@ export default {
         metodologia: this.syllabus.metodologia,
         bibliografia: this.syllabus.bibliografia,
       };
-      console.log("data");
-      console.log(request);
+      //console.log(this.syllabus.areaConocimiento);
+      //console.log(request);
       axios
         .put(url, request, this.$store.state.config)
         .then((result) => {
