@@ -1261,7 +1261,7 @@ export default {
       "/plan-de-clases/" +
       idPlan;
 
-      this.body_horario_consulta.horarios.splice(item, 1);
+      this.body_horario_clase.horarios.splice(item, 1);
 
       //Se convierten a JSON las listas que contienen los horarios de atencion y de clases, 
       //y se envian a la base de datos.
