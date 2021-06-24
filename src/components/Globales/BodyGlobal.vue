@@ -18,7 +18,7 @@
               @click="redireccion(card.nombre)"
             >
               <v-img
-                v-if="card.nombre == 'Bitacora'"
+                v-if="card.nombre == 'Bitácora'"
                 src="@/assets/btc1.png"
                 height="50%"
               >
@@ -60,7 +60,7 @@ export default {
       cursoNombre: "pedro",
       cards: [
         {
-          nombre: "Bitacora",
+          nombre: "Bitácora",
           icono: "clipboard-solid.svg",
         },
         {
@@ -80,7 +80,7 @@ export default {
      * Método encargado de redireccionar a la diferentes vistas de cada curso asociado
      */
     redireccion(accion) {
-      if (accion === "Bitacora") {
+      if (accion === "Bitácora") {
         this.$router.push({
           name: "Bitacora",
           params: {
